@@ -1,0 +1,39 @@
+{
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SENDGRID_API_KEY": "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"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5081"
+    },
+    "https": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SENDGRID_API_KEY": "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"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7039;http://localhost:5081"
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:13912",
+      "sslPort": 44319
+    }
+  }
+}
