@@ -17,10 +17,11 @@ namespace MvcBook.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var mvcBookContext = _context.Books.Include(b => b.Author).Include(b => b.Genre);
-            return View(await mvcBookContext.ToListAsync());
+            var sortedBooks = mvcBookContext.OrderByDescending(b => b.Rating).ToList();
+            return View(sortedBooks);
         }
 
         public IActionResult Privacy()

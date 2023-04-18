@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using System.Linq.Expressions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using MvcBook.Data;
 using MvcBook.Models;
 
@@ -22,12 +25,18 @@ namespace MvcBook.Controllers
             {
                 return Problem("Entity set Books is null");
             }
-            var books = from m in _context.Books select m;
+
+            IQueryable<Book> results = _context.Books.Include(b => b.Author).Include(b => b.Genre).AsQueryable();
+            
             if (!String.IsNullOrEmpty(q))
             {
-                books = books.Where(s => s.Title.Contains(q) || s.Author.Name.Contains(q));
+                results = results
+               .Where(a => a.Title.Contains(q) || a.Author.Name.Contains(q))
+               .Take(10);
             }
-            return View(books.ToList());
+
+            results = results.OrderBy(b => b.Title);
+            return View(results.ToList());
         }
 
         // GET: Books/Details/5
@@ -63,16 +72,35 @@ namespace MvcBook.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,Title,Rating,Price,AuthorId,GenreId")] Book book)
+        public async Task<IActionResult> Create([Bind("id,Title,Rating,Price,ImageUrl,AuthorId,GenreId")] Book book, string NewAuthorName)
         {
+            // create new author
+            if (!string.IsNullOrEmpty(NewAuthorName))
+            {
+                var newAuthor = new Author { Name = NewAuthorName };
+                _context.Authors.Add(newAuthor);
+                await _context.SaveChangesAsync();
+                book.AuthorId = (int)newAuthor.AuthorId;
+            }
+
+            ModelState.Remove("NewAuthorName");
+
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var error in errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorId"] = new SelectList(_context.Set<Author>(), "AuthorId", "AuthorId", book.AuthorId);
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId", book.GenreId);
+            ViewData["AuthorId"] = new SelectList(_context.Set<Author>(), "AuthorId", nameof(Author.Name), book.AuthorId);
+            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", nameof(Genre.Name), book.GenreId);
             return View(book);
         }
 
@@ -89,8 +117,8 @@ namespace MvcBook.Controllers
             {
                 return NotFound();
             }
-            ViewData["AuthorId"] = new SelectList(_context.Set<Author>(), "AuthorId", "AuthorId", book.AuthorId);
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId", book.GenreId);
+            ViewData["AuthorId"] = new SelectList(_context.Authors, "AuthorId", nameof(Author.Name));
+            ViewData["GenreId"] = new SelectList(_context.Genres, "GenreId", nameof(Genre.Name));
             return View(book);
         }
 
@@ -99,7 +127,7 @@ namespace MvcBook.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,Title,Rating,Price,AuthorId,GenreId")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("id,Title,Rating,Price,ImageUrl,AuthorId,GenreId")] Book book)
         {
             if (id != book.id)
             {

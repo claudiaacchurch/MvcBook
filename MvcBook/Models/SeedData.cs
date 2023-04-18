@@ -1,10 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using MvcBook.Data;
-using MvcBook.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MvcBook.Models
 {
@@ -16,18 +12,16 @@ namespace MvcBook.Models
                 serviceProvider.GetRequiredService<
                     DbContextOptions<MvcBookContext>>()))
             {
-     
                 if (context.Authors.Any())
                 {
                     return;
                 }
+
                 context.Authors.AddRange(
                     new Author() { Name = "J.K. Rowling" },
                     new Author() { Name = "Charles Dickens" },
                     new Author() { Name = "J.R.R. Tolkein" },
-                    new Author() { Name = "Stephen King" },
-                    new Author() { Name = "Harper Lee" },
-                    new Author() { Name = "Paul Coelho" }
+                    new Author() { Name = "Stephen King" }
                 );
 
                 if (context.Genres.Any())
@@ -43,7 +37,23 @@ namespace MvcBook.Models
                     new Genre() { Name = "Graphic Novels & Manga" },
                     new Genre() { Name = "Historical Fiction" },
                     new Genre() { Name = "Horror" },
-                    new Genre() { Name = "Philosophical" }
+                    new Genre() { Name = "Philosophy" },
+                    new Genre() { Name = "Poetry" },
+                    new Genre() { Name = "Romance" },
+                    new Genre() { Name = "Sci-Fi" },
+
+                    new Genre() { Name = "Art, Fashion & Photography" },
+                    new Genre() { Name = "Biography" },
+                    new Genre() { Name = "Business, Finance & Law" },
+                    new Genre() { Name = "Computing & IT" },
+                    new Genre() { Name = "Food & Drink" },
+                    new Genre() { Name = "History" },
+                    new Genre() { Name = "Languages" },
+                    new Genre() { Name = "Health, Wellbeing & Self-Help" },
+                    new Genre() { Name = "Politics, Society & Culture" },
+                    new Genre() { Name = "Science, Technology & Medicine" },
+                    new Genre() { Name = "Spirituality & Religion" },
+                    new Genre() { Name = "Travel" }
                );
 
                context.SaveChanges();

@@ -18,5 +18,6 @@ namespace MvcBook.Data
         public DbSet<MvcBook.Models.Book> Books { get; set; } = default!;
         public DbSet<MvcBook.Models.Author> Authors { get; set; } = default!;
         public DbSet<MvcBook.Models.Genre> Genres { get; set; } = default!;
+        public DbSet<MvcBook.Models.CartItem> ShoppingCartItems { get; set; } = default!;
     }
 }

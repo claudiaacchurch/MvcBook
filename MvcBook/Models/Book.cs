@@ -9,6 +9,7 @@ namespace MvcBook.Models
         [Range(0, 10)]
         public virtual int Rating { get; set; }
         public virtual double Price { get; set; }
+        public virtual string ImageUrl { get; set; } = string.Empty;
         public virtual Author? Author { get; set; }
         public virtual Genre? Genre { get; set; }
         public virtual int AuthorId { get; set; }
