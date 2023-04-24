@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.CodeAnalysis;
+
 namespace MvcBook.Models
 {
     public class Book
@@ -14,5 +16,6 @@ namespace MvcBook.Models
         public virtual Genre? Genre { get; set; }
         public virtual int AuthorId { get; set; }
         public virtual int GenreId { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

@@ -4,45 +4,75 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<div class="details-flex">
+    <div>
+        <h1 class="inner-details-title">@Html.DisplayFor(model => model.Title)</h1>
+        <hr>
+        <div class="small-details-flex">
+            <div>
+                <i>@Html.DisplayFor(model => model.Author.Name)</i>
+            </div>
+            <div>
+                @Html.DisplayFor(model => model.Rating)/10 &#9733;
+            </div>
+        </div>
+        <div>
+            <small>@Html.DisplayFor(model => model.Genre.Name)</small>
+        </div>
+    </div>
 
-<div>
-    <h4>Book</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Rating)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Rating)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Author)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Author.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Genre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Genre.Name)
-        </dd>
-    </dl>
+    <div class="inner-details comment-flex">
+        <div class="inner-comment comment-title">
+            <form asp-action="SubmitReview" asp-controller="Books" method="post">
+                <div class="rating-head">
+                    <p>Rate & Review @Html.DisplayFor(model => model.Title)</p>
+                </div>
+                <div class="rating" id="rating">
+                    <input type="radio" name="rating" value="10" id="star10" /><label for="star10">&#9733;</label>
+                    <input type="radio" name="rating" value="9" id="star9" /><label for="star9">&#9733;</label>
+                    <input type="radio" name="rating" value="8" id="star8" /><label for="star8">&#9733;</label>
+                    <input type="radio" name="rating" value="7" id="star7" /><label for="star7">&#9733;</label>
+                    <input type="radio" name="rating" value="6" id="star6" /><label for="star6">&#9733;</label>
+                    <input type="radio" name="rating" value="5" id="star5" /><label for="star5">&#9733;</label>
+                    <input type="radio" name="rating" value="4" id="star4" /><label for="star4">&#9733;</label>
+                    <input type="radio" name="rating" value="3" id="star3" /><label for="star3">&#9733;</label>
+                    <input type="radio" name="rating" value="2" id="star2" /><label for="star2">&#9733;</label>
+                    <input type="radio" name="rating" value="1" id="star1" /><label for="star1">&#9733;</label>
+                </div>
+                <br />
+                <input type="hidden" asp-for="id" />
+                <textarea name="CommentText" rows="4" cols="50" placeholder="Write your review here..."></textarea>
+                <br />
+                <input type="submit" class="btn review-submit" value="Submit Review!" />
+            </form>
+        </div>
+    </div>
+
+    <div>
+    £@Html.DisplayFor(model => model.Price)
+    <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@Model.id">Add to Cart</a>
+    </div>
+    <div>
+        <a asp-action="Index">Back to Store</a>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<!-- jquery for star radio boxes -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ratingContainer = document.getElementById("rating");
+        const inputs = ratingContainer.getElementsByTagName("input");
+
+        for (let i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("click", function () {
+                for (let j = 0; j < inputs.length; j++) {
+                    const label = ratingContainer.querySelector(`label[for="${inputs[j].id}"]`);
+                    if (j <= i) {
+                        label.style.color = "gold";
+                    } else {
+                        label.style.color = "lightgray";
+                    }
+                }
+            });
+        }
+    });
+</script>

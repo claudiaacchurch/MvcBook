@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using MvcBook.Data;
+using MvcBook.Models;
 
 namespace MvcBook.Models
 {
@@ -12,6 +14,9 @@ namespace MvcBook.Models
                 serviceProvider.GetRequiredService<
                     DbContextOptions<MvcBookContext>>()))
             {
+               
+                //authors and genres
+
                 if (context.Authors.Any())
                 {
                     return;
@@ -55,9 +60,10 @@ namespace MvcBook.Models
                     new Genre() { Name = "Spirituality & Religion" },
                     new Genre() { Name = "Travel" }
                );
-
-               context.SaveChanges();
+                context.SaveChanges();
             }
+
         }
+
     }
 }

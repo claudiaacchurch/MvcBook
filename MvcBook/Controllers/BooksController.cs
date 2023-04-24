@@ -1,9 +1,7 @@
-﻿using System.Linq;
-using System.Linq.Expressions;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using MvcBook.Data;
 using MvcBook.Models;
 
@@ -19,6 +17,7 @@ namespace MvcBook.Controllers
         }
 
         // GET: Books
+        [AllowAnonymous]
         public IActionResult Index(string q)
         {
             if (_context.Books == null)
@@ -40,6 +39,7 @@ namespace MvcBook.Controllers
         }
 
         // GET: Books/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Books == null)
@@ -60,6 +60,7 @@ namespace MvcBook.Controllers
         }
 
         // GET: Books/Create
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Create()
         {
             ViewData["AuthorId"] = new SelectList(_context.Authors, "AuthorId", nameof(Author.Name));
@@ -105,6 +106,7 @@ namespace MvcBook.Controllers
         }
 
         // GET: Books/Edit/5
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Books == null)
@@ -160,6 +162,7 @@ namespace MvcBook.Controllers
         }
 
         // GET: Books/Delete/5
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Books == null)

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MvcBook.Data;
@@ -17,6 +18,7 @@ namespace MvcBook.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             var mvcBookContext = _context.Books.Include(b => b.Author).Include(b => b.Genre);

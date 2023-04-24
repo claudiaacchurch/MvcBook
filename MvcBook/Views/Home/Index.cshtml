@@ -3,156 +3,201 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Browse the Mvc Book Store</p>
-</div>
+<body>
+    <div class="text-center">
+        <h1 class="display-4 welcome-title">Welcome</h1>
+        <p class="sub-title">Explore the MvcBook Store</p>
+    </div>
 
-<h2>Weekly Explore</h2>
-<div class="row">
-    @{
-        var rand = new Random();
-        int i = 0;
-        var randomPicks = Model.OrderBy(b => rand.Next());
-        var weeklyExplore = randomPicks.Where(r => r.Rating >= 5 && r.Genre.Name != "Children's Books" && r.Genre.Name != "Food & Drink");
+    <p class="home-titles">Daily Browse</p>
+    <div class="scroll-container">
+        <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
+        <div class="container-flex">
+            @{
+                var rand = new Random();
+                int i = 0;
+                var randomPicks = Model.OrderBy(b => rand.Next());
+                var weeklyExplore = randomPicks.Where(r => r.Rating >= 5 && r.Genre.Name != "Children's Books" && r.Genre.Name != "Food & Drink");
 
-        foreach (var item in weeklyExplore)
-        {
-            <div class="col-lg-3">
-                <img src="@item.ImageUrl" alt="@item.Title" width="200" height="300">
-                <br>
-                @Html.DisplayFor(modelItem => item.Title)
-                <br>
-                @Html.DisplayFor(modelItem => item.Author.Name)
-            </div>
+                foreach (var item in weeklyExplore)
+                {
+                    <div class="inner-flex image-text-container">
+                        <a href="#"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
+                            <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
+                            <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
+                    </div>
 
-            i++;
-            if (i > 3)
-            {
-                break;
-            }
-        }
-    }
-</div>
-<h2>Popular Fiction</h2>
-<div class="row">
-    @{
-        int count = 0;
-        var favouriteBooks = Model.Where(g => g.Genre.Name == "Action & Adventure" ||
-        g.Genre.Name == "Classics" ||
-        g.Genre.Name == "Crime & Thriller" ||
-        g.Genre.Name == "Fantasy" ||
-        g.Genre.Name == "Graphic Novels & Manga" ||
-        g.Genre.Name == "Historical Fiction" ||
-        g.Genre.Name == "Horror" ||
-        g.Genre.Name == "Philosophy" ||
-        g.Genre.Name == "Poetry" ||
-        g.Genre.Name == "Romance" ||
-        g.Genre.Name == "Sci-Fi");
-
-        foreach (var item in favouriteBooks)
-        {
-            <div class="col-lg-3">
-                <img src="@item.ImageUrl" alt="@item.Title" width="200" height="300">
-                <br>
-                @Html.DisplayFor(modelItem => item.Title)
-                <br>
-                @Html.DisplayFor(modelItem => item.Author.Name)
-                <br>
-            </div>
-            count++;
-            if (count > 3)
-            {
-                break;
+                    i++;
+                    if (i > 10)
+                    {
+                        break;
+                    }
+                }
             }
 
+        </div>
+        <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
+    </div>
+
+    <p class="home-titles">Popular Fiction</p>
+    <div class="scroll-container">
+        <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
+        <div class="container-flex">
+            @{
+                int count = 0;
+                var favouriteBooks = Model.Where(g => g.Genre.Name == "Action & Adventure" ||
+                g.Genre.Name == "Classics" ||
+                g.Genre.Name == "Crime & Thriller" ||
+                g.Genre.Name == "Fantasy" ||
+                g.Genre.Name == "Graphic Novels & Manga" ||
+                g.Genre.Name == "Historical Fiction" ||
+                g.Genre.Name == "Horror" ||
+                g.Genre.Name == "Philosophy" ||
+                g.Genre.Name == "Poetry" ||
+                g.Genre.Name == "Romance" ||
+                g.Genre.Name == "Sci-Fi");
+
+                foreach (var item in favouriteBooks)
+                {
+                    <div class="inner-flex">
+                        <img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title" width="200" height="300">
+                        <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
+                        <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
+                    </div>
+                    count++;
+                    if (count > 10)
+                    {
+                        break;
+                    }
+                }
+            }
+        </div>
+        <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
+    </div>
+
+    <p class="home-titles"> Best in Non-Fiction</p>
+    <div class="scroll-container">
+        <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
+        <div class="container-flex">
+            @{
+                int secondCount = 0;
+                var nonFiction = Model.Where(g => g.Genre.Name == "Art, Fashion & Photography" ||
+                g.Genre.Name == "Biography" ||
+                g.Genre.Name == "Business, Finance & Law" ||
+                g.Genre.Name == "Computing & IT" ||
+                g.Genre.Name == "History" ||
+                g.Genre.Name == "Languages" ||
+                g.Genre.Name == "Health, Wellbeing & Self-Help" ||
+                g.Genre.Name == "Politics, Society & Culture" ||
+                g.Genre.Name == "Science, Technology & Medicine" ||
+                g.Genre.Name == "Spirituality & Religion" ||
+                g.Genre.Name == "Travel");
+
+
+                foreach (var item in nonFiction)
+                {
+                    <div class="inner-flex">
+                        <img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title" width="200" height="300">
+                        <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
+                        <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
+                    </div>
+                    secondCount++;
+                    if (secondCount > 10)
+                    {
+                        break;
+                    }
+                }
+            }
+        </div>
+        <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
+    </div>
+
+    <p class="home-titles">Best in Food & Drink</p>
+    <div class="scroll-container">
+        <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
+        <div class="container-flex">
+            @{
+                int thirdCount = 0;
+                var foodDrink = Model.Where(g => g.Genre.Name == "Food & Drink");
+                foreach (var item in foodDrink)
+                {
+                    <div class="inner-flex">
+                        <img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title" width="200" height="300">
+                        <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
+                        <p class ="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
+                    </div>
+                    thirdCount++;
+                    if (thirdCount > 10)
+                    {
+                        break;
+                    }
+                }
+            }
+        </div>
+        <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
+    </div>
+
+    <p class="home-titles">Best in Children's</p>
+    <div class="scroll-container">
+        <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
+        <div class="container-flex">
+            @{
+                var childrensChoice = Model.Where(g => g.Genre.Name == "Children's Books");
+                var fourthCount = 0;
+                @foreach (var item in childrensChoice)
+                {
+                    <div class="inner-flex">
+                        <img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title" width="200" height="300">
+                        <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
+                        <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
+                    </div>
+
+                    fourthCount++;
+                    @if (fourthCount > 10)
+                    {
+                        break;
+                    }
+                }
+            }
+        </div>
+        <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
+    </div>
+
+    <!--JavaScript functions for scrollbar and to hide arrows as needed-->
+    <script>
+        function scrollContent(button, direction) {
+            const scrollSpeed = 300;
+            const container = button.parentElement.querySelector('.container-flex');
+            container.scrollBy({ left: direction * scrollSpeed, behavior: 'smooth' });
+            setTimeout(() => updateArrowsVisibility(container), 300);
         }
-    }
-</div>
 
-<h2> Best in Non-Fiction</h2>
-<div class="row">
-    @{
-        int secondCount = 0;
-        var nonFiction = Model.Where(g => g.Genre.Name == "Art, Fashion & Photography" || 
-        g.Genre.Name == "Biography" ||
-        g.Genre.Name == "Business, Finance & Law" ||
-        g.Genre.Name == "Computing & IT" ||
-        g.Genre.Name == "History" ||
-        g.Genre.Name == "Languages" ||
-        g.Genre.Name == "Health, Wellbeing & Self-Help" ||
-        g.Genre.Name == "Politics, Society & Culture" ||
-        g.Genre.Name == "Science, Technology & Medicine" ||
-        g.Genre.Name == "Spirituality & Religion" ||
-        g.Genre.Name == "Travel");
+        function updateArrowsVisibility(container) {
+            const leftArrow = container.parentElement.querySelector('.scroll-btn.left');
+            const rightArrow = container.parentElement.querySelector('.scroll-btn.right');
 
+            // left arrow
+            if (container.scrollLeft > 0) {
+                leftArrow.style.display = 'block';
+            } else {
+                leftArrow.style.display = 'none';
+            }
 
-        foreach (var item in nonFiction)
-        {
-            <div class="col-lg-3">
-                <img src="@item.ImageUrl" alt="@item.Title" width="200" height="300">
-                <br>
-                @Html.DisplayFor(modelItem => item.Title)
-                <br>
-                @Html.DisplayFor(modelItem => item.Author.Name)
-            </div>
-            secondCount++;
-            if (secondCount > 3)
-            {
-                break;
+            // right arrow
+            if (container.scrollLeft < container.scrollWidth - container.clientWidth) {
+                rightArrow.style.display = 'block';
+            } else {
+                rightArrow.style.display = 'none';
             }
         }
-    }
-</div>
 
-<h2>Best in Food & Drink</h2>
-<div class="row">
-    @{
-        int thirdCount = 0;
-        var foodDrink = Model.Where(g => g.Genre.Name == "Food & Drink");
-        foreach (var item in foodDrink)
-        {
-            <div class="col-lg-3">
-                <img src="@item.ImageUrl" alt="@item.Title" width="200" height="300">
-                <br>
-                @Html.DisplayFor(modelItem => item.Title)
-                <br>
-                @Html.DisplayFor(modelItem => item.Author.Name)
-                <br>
-            </div>
-            thirdCount++;
-            if (thirdCount > 3)
-            {
-                break;
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.container-flex').forEach((container) => {
+                updateArrowsVisibility(container);
+                container.addEventListener('scroll', () => updateArrowsVisibility(container));
+            });
+        });
+    </script>
+</body>
 
-        }
-    }
-</div>
 
-<h2>Best in Children's</h2>
-<div class="row">
-    @{
-        var childrensChoice = Model.Where(g => g.Genre.Name == "Children's Books");
-        var fourthCount = 0;
-        @foreach (var item in childrensChoice)
-        {
-            <div class="col-lg-3">
-                <img src="@item.ImageUrl" alt="@item.Title" width="200" height="300">
-                <br>
-                @Html.DisplayFor(modelItem => item.Title)
-                <br>
-                @Html.DisplayFor(modelItem => item.Author.Name)
-            </div>
-
-            fourthCount++;
-            @if (fourthCount > 3)
-            {
-                break;
-            }
-
-        }
-    }
-</div>
-
-    

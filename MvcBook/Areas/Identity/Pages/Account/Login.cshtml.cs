@@ -14,18 +14,33 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+using MvcBook.Controllers;
+using MvcBook.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace MvcBook.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class LoginModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly ShoppingCartController _shoppingCartController;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly MvcBookContext _context;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger, IHttpContextAccessor httpContextAccessor, UserManager<IdentityUser> userManager, MvcBookContext context)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _contextAccessor = httpContextAccessor;
+            _shoppingCartController = new ShoppingCartController(context, httpContextAccessor);
+            _userManager = userManager;
+            _context = context;
         }
 
         /// <summary>
@@ -100,7 +115,7 @@ namespace MvcBook.Areas.Identity.Pages.Account
 
             ReturnUrl = returnUrl;
         }
-
+        
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -111,10 +126,18 @@ namespace MvcBook.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                //currentSession = HttpContext.Session.GetString(_context.)
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    _shoppingCartController.ShoppingCartId = _contextAccessor.HttpContext.Session.GetString(ShoppingCartController.CartSessionKey);
+                    var user = await _userManager.Users.SingleOrDefaultAsync(u => u.Email == Input.Email);
+                    if (user != null)
+                    {
+                        _shoppingCartController.MigrateCart(user.Id);
+                    }
+           
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -127,7 +150,7 @@ namespace MvcBook.Areas.Identity.Pages.Account
                     return RedirectToPage("./Lockout");
                 }
                 else
-                {
+                {            
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }

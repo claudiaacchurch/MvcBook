@@ -2,16 +2,29 @@ using Microsoft.EntityFrameworkCore;
 using MvcBook.Models;
 using MvcBook.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MvcBookContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MvcBookContext") ?? throw new InvalidOperationException("Connection string 'MvcBookContext' not found.")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>() // Add this line to include roles
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>() // include roles
     .AddEntityFrameworkStores<MvcBookContext>();
 
+builder.Services.AddAuthorization(options =>
+{
+options.AddPolicy("AdminOnly", policy =>
+   policy.RequireAssertion(context =>
+       context.User.Identity != null &&
+       context.User.Claims.Any(claim => claim.Type == ClaimTypes.Email && claim.Value == "admin@gmail.com")));
+
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+    .RequireAuthenticatedUser()
+    .Build();
+}); // add this for pages to require authentication by default; instead add [AllowAnonymous] on pages accesible by non-authenticated users.
 
 builder.Services.AddSession(options =>
 {

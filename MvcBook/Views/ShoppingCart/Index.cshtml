@@ -9,7 +9,7 @@
 <table class="table table-striped table-bordered">
     <thead>
         <tr>
-            <th>Book</th>
+            <th>Item</th>
             <th>Price</th>
             <th>Quantity</th>
             <th>Item Total</th>
@@ -21,14 +21,12 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Book.Title</td>
+                <td>@item.Book.Title - @item.Book.Author.Name</td>
                 <td>@item.Book.Price.ToString("C")</td>
+                <td> @item.Quantity</td>
+                <td>@((item.Quantity * item.Book.Price).ToString("C"))</td>
                 <td>
-                    <input type="number" min="1" value="@item.Quantity" style="width: 40px;" />
-                </td>
-                <td>@(item.Quantity * item.Book.Price).ToString("C")</td>
-                <td>
-                    <input type="checkbox" id="Remove" />
+                    <a asp-action="DeleteCartItem" asp-route-id="@item.ItemId">Remove</a>
                 </td>
             </tr>
         }
@@ -41,4 +39,5 @@
         </tr>
     </tfoot>
 </table>
+<a asp-controller="ShoppingCart" asp-action="Checkout">Checkout</a>
 <br />

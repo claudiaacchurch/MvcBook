@@ -1,0 +1,191 @@
+﻿* {
+    font-family: 'Roboto', sans-serif;
+}
+
+/* navbar */
+.navbar-brand {
+    color: #1A365D !important;
+    font-weight: 300;
+}
+
+.nav-item {
+    margin: 0.5em;
+    font-size: 0.8em;
+}
+
+.nav-colors {
+    color: #1A365D !important;
+    font-weight: 400;
+}
+
+    .nav-colors:hover {
+        color: black !important;
+    }
+
+.inner-image {
+    transition: transform 0.3s ease-in-out;
+}
+    .inner_image:hover {
+        transform: scale(1.05);
+    }
+/* book nav-item dropdown */
+.dropdown-menu {
+    width: auto;
+    height: auto;
+}
+.container-dropdown {
+    width: 100%;
+    column-count: 3;
+    column-gap: 5rem;
+    padding: 0.5rem;
+}
+.dropdown-item {
+    white-space: nowrap;
+    display: block; /* block-level to take up full width of parent and start on new line*/
+    break-inside: avoid; /* no breaking item's across columns */
+    font-weight: 300;
+}
+p.dropdown-item {
+    font-size: 1em !important;
+    color: black !important;
+    font-weight: 400;
+    padding: 4% 0 0 0 !important;
+}
+a.dropdown-item {
+    color: #1A365D !important;
+    font-size: 0.8em;
+    font-weight: 400;
+}
+.dropdown:hover .dropdown-menu {
+    display: block; /* default (dropdown-menu) = none in bs, so now displays dropdown-menu when dropdown is hovered*/
+}
+
+/* homepage */
+.welcome-title {
+    font-family: 'Playfair Display', serif;
+    color: #1A365D;
+}
+.sub-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5em;
+    color: #1A365D;
+}
+.home-titles {
+    font-family: 'Playfair Display', serif;
+    margin: 2% 0;
+    font-style: italic;
+    font-size: 2em;
+}
+.container-flex {
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+    overflow-x: scroll;
+    overflow-y: hidden; /* no vertical scrollbar*/
+    -ms-overflow-style: none; /* Internet explorer and edge */
+    scrollbar-width: none; /* firefox */
+}
+    .container-flex::-webkit-scrollbar {
+        display: none; /* default scroll hidden to show html arrows*/
+    }
+
+.inner-flex{
+    display: flex;
+    flex-direction: column;
+}
+
+img.inner-item {
+    height:300px;
+    transition: transform 0.3s ease-in-out;
+}
+    .inner-image:hover {
+        transform: scale(1.1); 
+    }
+
+.inner-item{
+    align-items:flex-start;
+    justify-content: center;
+    flex-grow: 1;
+}
+.home-book-titles {
+    font-weight: bold;
+    padding: 2% 0;
+}
+.inner-item {
+    margin-bottom: 0;
+}
+
+/* scrollbar */
+.scroll-container {
+    position: relative; /* context for child positions */
+}
+.scroll-btn {
+    position: absolute;
+    top: 35%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Semi-transparent white border */
+    border-radius: 50%; /* Make the button circular */
+    padding: 0.5em; /* Adjust padding */
+    width: 40px; /* Set width and height for a uniform circle */
+    height: 40px;
+    display: flex; /* Center the arrow inside the button */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1;
+    margin: 0;
+    transition: background-color 0.3s, border-color 0.3s; /* Smooth transition on hover */
+}
+
+    .scroll-btn:hover {
+        background-color: rgba(0, 0, 0, 0.8); /* Darker background on hover */
+        border-color: rgba(255, 255, 255, 0.8); /* More visible border on hover */
+    }
+
+    .scroll-btn::before {
+        /* Create an arrow using the content property */
+        content: "⮞";
+        color: #fff;
+        font-size: 1rem;
+        font-weight: bold;
+        transform: rotate(-90deg);
+    }
+
+    .scroll-btn.left {
+        left: -5%;
+    }
+        .scroll-btn.left::before {
+            content: "⮜"; /* Change the arrow direction for the left button */
+            color: #fff;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+    .scroll-btn.right {
+        right: -5%;
+        content: "⮞";
+    }
+
+/* details */
+.details-flex {
+    display: flex;
+    flex-direction: column;
+}
+
+.inner-details-title {
+    font-family: 'Playfair Display', serif;
+}
+
+.small-details-flex {
+    display: flex;
+    flex-direction: row;
+    gap: 5%;
+}
+
+.comment-flex {
+    margin: 3% 0;
+}
+
+.review-submit {
+    background-color:#214374;
+    color: white;
+}

@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<MvcBook.Models.Book>
+@using System.Security.Claims;
 
 @{
     ViewData["Title"] = "Index";
@@ -7,7 +8,11 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @if (User.Claims.Any(claim => claim.Type == ClaimTypes.Email && claim.Value == "admin@gmail.com"))
+    {
+        <a asp-action="Create">Create New</a>
+    }
+   
 </p>
 
 <form asp-controller="Books" asp-action="Index">
@@ -57,10 +62,13 @@
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a> |
                 <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
+                    @if(User.Claims.Any(claim => claim.Type == ClaimTypes.Email && claim.Value == "admin@gmail.com"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.id">Delete</a> 
+                        <a asp-action="Edit" asp-route-id="@item.id">Edit</a> 
+                    }
             </td>
         </tr>
 }

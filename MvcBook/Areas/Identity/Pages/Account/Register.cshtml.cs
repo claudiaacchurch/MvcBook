@@ -18,9 +18,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using MvcBook.Controllers;
+using MvcBook.Data;
 
 namespace MvcBook.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -29,13 +32,16 @@ namespace MvcBook.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly ShoppingCartController _shoppingCartController;
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly MvcBookContext _context;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, MvcBookContext context, IHttpContextAccessor contextAccessor)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -43,6 +49,9 @@ namespace MvcBook.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
+            _contextAccessor = contextAccessor;
+            _shoppingCartController = new ShoppingCartController(context, contextAccessor);
         }
 
         /// <summary>
@@ -121,7 +130,7 @@ namespace MvcBook.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-
+                    _shoppingCartController.ShoppingCartId = _contextAccessor.HttpContext.Session.GetString(ShoppingCartController.CartSessionKey);
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -141,6 +150,7 @@ namespace MvcBook.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+                        _shoppingCartController.MigrateCart(user.UserName);
                         return LocalRedirect(returnUrl);
                     }
                 }
