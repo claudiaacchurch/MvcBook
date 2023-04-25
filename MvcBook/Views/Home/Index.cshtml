@@ -22,9 +22,14 @@
                 foreach (var item in weeklyExplore)
                 {
                     <div class="inner-flex image-text-container">
-                        <a href="#"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
-                            <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
-                            <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
+                        <div class="image-home-effects">
+                            <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
+                            <div class="middle">
+                                <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
+                            </div>
+                        </div>
+                        <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
+                        <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
                     </div>
 
                     i++;
@@ -59,11 +64,17 @@
 
                 foreach (var item in favouriteBooks)
                 {
-                    <div class="inner-flex">
-                        <img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title" width="200" height="300">
+                    <div class="inner-flex image-text-container">
+                        <div class="image-home-effects">
+                            <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
+                            <div class="middle">
+                                <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
+                            </div>
+                        </div>
                         <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
                         <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
                     </div>
+
                     count++;
                     if (count > 10)
                     {
@@ -96,8 +107,13 @@
 
                 foreach (var item in nonFiction)
                 {
-                    <div class="inner-flex">
-                        <img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title" width="200" height="300">
+                    <div class="inner-flex image-text-container">
+                        <div class="image-home-effects">
+                            <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
+                            `<div class="middle">
+                                <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
+                            </div>
+                        </div>
                         <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
                         <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
                     </div>
@@ -121,10 +137,15 @@
                 var foodDrink = Model.Where(g => g.Genre.Name == "Food & Drink");
                 foreach (var item in foodDrink)
                 {
-                    <div class="inner-flex">
-                        <img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title" width="200" height="300">
+                    <div class="inner-flex image-text-container">
+                        <div class="image-home-effects">
+                            <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
+                            <div class="middle">
+                                <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
+                            </div>
+                        </div>
                         <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
-                        <p class ="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
+                        <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
                     </div>
                     thirdCount++;
                     if (thirdCount > 10)
@@ -146,8 +167,13 @@
                 var fourthCount = 0;
                 @foreach (var item in childrensChoice)
                 {
-                    <div class="inner-flex">
-                        <img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title" width="200" height="300">
+                    <div class="inner-flex image-text-container">
+                        <div class="image-home-effects">
+                            <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
+                            <div class="middle">
+                                <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
+                            </div>
+                        </div>
                         <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
                         <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
                     </div>

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using MvcBook.Models
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -8,6 +10,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MvcBook.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+    <!--font awesome-->
+    <script src="https://kit.fontawesome.com/2307716659.js" crossorigin="anonymous"></script>
     <!--google fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,6 +40,7 @@
                                     <div class="container-dropdown">
                                         <a class="dropdown-item" asp-controller="Books" asp-action="Index">All</a>
                                         <p class="dropdown-item">Fiction</p>
+                                        
                                         <a class="dropdown-item" href="#">Action & Adventure</a>
                                         <a class="dropdown-item" href="#">Classics</a>
                                         <a class="dropdown-item" href="#">Crime & Thriller</a>
@@ -65,6 +70,7 @@
                                         <a class="dropdown-item" href="#">Ages 5-8</a>
                                         <a class="dropdown-item" href="#">Ages 9-12</a>
                                         <a class="dropdown-item" href="#">Teens & Young Adults</a>
+
                                     </div>
                                 </div>
                             </div>
@@ -92,7 +98,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - MvcBook - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2023 - MvcBook </a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

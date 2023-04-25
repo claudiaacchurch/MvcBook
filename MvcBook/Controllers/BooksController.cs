@@ -38,6 +38,7 @@ namespace MvcBook.Controllers
             return View(results.ToList());
         }
 
+
         // GET: Books/Details/5
         [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
@@ -46,19 +47,62 @@ namespace MvcBook.Controllers
             {
                 return NotFound();
             }
-
             var book = await _context.Books
                 .Include(b => b.Author)
                 .Include(b => b.Genre)
                 .FirstOrDefaultAsync(m => m.id == id);
+            book.Comments = _context.Comments.Where(c => c.BookId == id).ToList();
+            
+            foreach (var comment in book.Comments)
+            {
+                book.Rating += comment.Rating;
+            }
+            book.Rating /= (book.Comments.Count + 1);
             if (book == null)
             {
                 return NotFound();
             }
-
+            _context.SaveChangesAsync();
             return View(book);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public async Task<IActionResult> Details(Comment comment)
+        {
+            comment.UserId = User.Identity.Name;
+            var dict = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
+            var intnewRating = dict["rating"];
+            var commentText = dict["CommentText"];
+            var bookId = dict["id_name"];
+            var intBookId = int.Parse(bookId);
+
+
+            comment.CommentText = commentText;
+            comment.Rating = int.Parse(intnewRating);
+            comment.BookId = intBookId;
+            comment.Book = _context.Books.SingleOrDefault(b => b.id == intBookId);
+  
+
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var error in errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+            }
+            else
+            {
+                _context.Add(comment);
+                await _context.SaveChangesAsync();
+            }
+            return View(comment.Book);
+
+        }
+       
+        
         // GET: Books/Create
         [Authorize(Policy = "AdminOnly")]
         public IActionResult Create()
@@ -205,5 +249,7 @@ namespace MvcBook.Controllers
         {
           return (_context.Books?.Any(e => e.id == id)).GetValueOrDefault();
         }
+
+
     }
 }

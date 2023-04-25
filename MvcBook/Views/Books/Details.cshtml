@@ -5,57 +5,83 @@
 }
 
 <div class="details-flex">
-    <div>
-        <h1 class="inner-details-title">@Html.DisplayFor(model => model.Title)</h1>
-        <hr>
-        <div class="small-details-flex">
-            <div>
-                <i>@Html.DisplayFor(model => model.Author.Name)</i>
-            </div>
-            <div>
-                @Html.DisplayFor(model => model.Rating)/10 &#9733;
+
+    <h1 class="inner-details-title">@Html.DisplayFor(model => model.Title)</h1>
+
+    <hr>
+
+    <div class="small-details-row">
+        <small class="genre-margin">Found in:<a href="#"> @Html.DisplayFor(model => model.Genre.Name)</a></small>
+    </div>
+
+    <div class="small-details-flex">
+        <div class="small-details-col">
+            <div class="small-details-row">
+                <img class="detail-image" src="@Model.ImageUrl" alt="@Model.Title">
             </div>
         </div>
-        <div>
-            <small>@Html.DisplayFor(model => model.Genre.Name)</small>
+        <div class="small-details-col">
+            <div>
+                <p class="detail-author">@Html.DisplayFor(model => model.Author.Name)</p>
+                <p class="details-text">@Html.DisplayFor(model => model.Rating)/10 &#9733;</p>
+                <p class="details-text"><b>£@Html.DisplayFor(model => model.Price)</b></p>
+                <a class="item-buttons" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@Model.id">ADD TO CART</a>
+            </div>
+
         </div>
     </div>
 
+    <hr />
     <div class="inner-details comment-flex">
         <div class="inner-comment comment-title">
-            <form asp-action="SubmitReview" asp-controller="Books" method="post">
+
+            @using (Html.BeginForm("Details", "Books", FormMethod.Post))
+            {
                 <div class="rating-head">
-                    <p>Rate & Review @Html.DisplayFor(model => model.Title)</p>
+                    <p class="rate-header">Leave a Review: @Html.DisplayFor(model => model.Title)</p>
                 </div>
+                <input name="id_name" id="id_name" value="@Model.id" hidden>
                 <div class="rating" id="rating">
-                    <input type="radio" name="rating" value="10" id="star10" /><label for="star10">&#9733;</label>
-                    <input type="radio" name="rating" value="9" id="star9" /><label for="star9">&#9733;</label>
-                    <input type="radio" name="rating" value="8" id="star8" /><label for="star8">&#9733;</label>
-                    <input type="radio" name="rating" value="7" id="star7" /><label for="star7">&#9733;</label>
-                    <input type="radio" name="rating" value="6" id="star6" /><label for="star6">&#9733;</label>
-                    <input type="radio" name="rating" value="5" id="star5" /><label for="star5">&#9733;</label>
-                    <input type="radio" name="rating" value="4" id="star4" /><label for="star4">&#9733;</label>
-                    <input type="radio" name="rating" value="3" id="star3" /><label for="star3">&#9733;</label>
-                    <input type="radio" name="rating" value="2" id="star2" /><label for="star2">&#9733;</label>
-                    <input type="radio" name="rating" value="1" id="star1" /><label for="star1">&#9733;</label>
+                    <input class="star1" type="radio" id="rating" name="rating" value="1" /><label for="star1">&#9733;</label>
+                    <input class="star2" type="radio" id="rating" name="rating" value="2" /><label for="star2">&#9733;</label>
+                    <input class="star3" type="radio" id="rating" name="rating" value="3" /><label for="star3">&#9733;</label>
+                    <input class="star4" type="radio" id="rating" name="rating" value="4" /><label for="star4">&#9733;</label>
+                    <input class="star5" type="radio" id="rating" name="rating" value="5" /><label for="star5">&#9733;</label>
+                    <input class="star6" type="radio" id="rating" name="rating" value="6" /><label for="star6">&#9733;</label>
+                    <input class="star7" type="radio" id="rating" name="rating" value="7" /><label for="star7">&#9733;</label>
+                    <input class="star8" type="radio" id="rating" name="rating" value="8" /><label for="star8">&#9733;</label>
+                    <input class="star9" type="radio" id="rating" name="rating" value="9" /><label for="star9">&#9733;</label>
+                    <input class="star10" type="radio" id="rating" name="rating" value="10" /><label for="star10">&#9733;</label>
                 </div>
                 <br />
-                <input type="hidden" asp-for="id" />
-                <textarea name="CommentText" rows="4" cols="50" placeholder="Write your review here..."></textarea>
+                <label for="CommentText" hidden="hidden"></label>
+                <textarea id="CommentText" name="CommentText" rows="4" cols="50" placeholder="Write your review here..."></textarea>
                 <br />
                 <input type="submit" class="btn review-submit" value="Submit Review!" />
-            </form>
+            }
         </div>
     </div>
 
-    <div>
-    £@Html.DisplayFor(model => model.Price)
-    <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@Model.id">Add to Cart</a>
+    <hr />
+
+    <div class="inner-details comment-flex">
+
+        <h1 class="rate-header">What Others Have Said ...</h1>
+
+        @foreach (Comment comment in Model.Comments)
+        {
+            <div class="comments-flex">
+                <div class="comments-row">
+                    <div class="part1">@comment.UserId</div>
+                    <div class="part1"> @comment.Rating &#9733</div>
+                    <div class="part2"> @comment.CommentText</div>
+                </div>
+            </div>
+        }
     </div>
-    <div>
-        <a asp-action="Index">Back to Store</a>
-    </div>
+
 </div>
+
 <!-- jquery for star radio boxes -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {

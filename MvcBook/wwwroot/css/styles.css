@@ -94,12 +94,51 @@ a.dropdown-item {
     flex-direction: column;
 }
 
-img.inner-item {
-    height:300px;
-    transition: transform 0.3s ease-in-out;
+.image-text-container {
+    position: relative;
+    width: 100%;
 }
-    .inner-image:hover {
-        transform: scale(1.1); 
+
+.inner-image {
+    height: 400px;
+    opacity: 1;
+    display: block;
+    transition: .5s ease;
+    backface-visibility: hidden;
+}
+
+.middle {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.image-text-container:hover .inner-image {
+    opacity: 0.3;
+}
+
+.image-text-container:hover .middle {
+    opacity: 1;
+}
+
+.middle-text {
+    background-color: #1A365D;
+    color: white;
+    font-size: 16px;
+    padding: 1em;
+    border: 1px solid #1A365D;
+    border-radius: 15px;
+    text-decoration: none;
+}
+    .middle-text:hover {
+        background-color: #8C9AAE;
+        border: 1px solid #8C9AAE;
+        color: white;
     }
 
 .inner-item{
@@ -175,12 +214,37 @@ img.inner-item {
     font-family: 'Playfair Display', serif;
 }
 
+.detail-author {
+    font-size: 1.5em;
+    font-style: italic;
+    margin-top: 1em;
+}
+
+.details-text {
+    font-size: 1em;
+}
 .small-details-flex {
     display: flex;
     flex-direction: row;
     gap: 5%;
 }
 
+.small-details-col {
+    display: flex;
+    flex-direction: column;
+    gap: 5%;
+}
+
+.small-details-row {
+    display: flex;
+    flex-direction: row;
+    gap: 5%;
+}
+
+.row {
+    display:flex;
+    flex-direction: row;
+}
 .comment-flex {
     margin: 3% 0;
 }
@@ -188,4 +252,49 @@ img.inner-item {
 .review-submit {
     background-color:#214374;
     color: white;
+}
+
+.rate-header {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5em;
+}
+
+.detail-image {
+    height: 300px;
+}
+
+.genre-margin {
+    margin-bottom: 2%;
+}
+
+.comments-flex {
+    display: flex;
+    flex-direction: column;
+    margin: 3%;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.comments-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.part1 {
+    flex-basis: 10%;
+    padding: 0.5em;
+}
+
+.part2 {
+    flex-basis: 100%;
+    padding: 0.5em;
+}
+
+.item-buttons {
+    background-color: #0d6efd;
+    text-decoration: none;
+    color: white;
+    padding: 0.4em;
+    border-radius: 5px;
 }
