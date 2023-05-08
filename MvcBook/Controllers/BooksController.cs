@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,26 +19,26 @@ namespace MvcBook.Controllers
 
         // GET: Books
         [AllowAnonymous]
-        public IActionResult Index(string q)
+        public IActionResult Index()
         {
-            if (_context.Books == null)
-            {
-                return Problem("Entity set Books is null");
-            }
+            List<Genre> genres = _context.Genres.Include(g => g.Books).ToList();
+            return View(genres);
+        }
 
-            IQueryable<Book> results = _context.Books.Include(b => b.Author).Include(b => b.Genre).AsQueryable();
-            
+        [AllowAnonymous]
+        public IActionResult Search(string q) 
+        {
+            IQueryable<Book> results = _context.Books.Include(b => b.Authors).Include(b => b.Genres).AsQueryable();
+
             if (!String.IsNullOrEmpty(q))
             {
                 results = results
-               .Where(a => a.Title.Contains(q) || a.Author.Name.Contains(q))
-               .Take(10);
+               .Where(b => b.Title.Contains(q) || b.Authors.Any(a => a.Name.Contains(q)));
             }
 
-            results = results.OrderBy(b => b.Title);
+            results = results.OrderBy(b => b.Title).Take(10);
             return View(results.ToList());
         }
-
 
         // GET: Books/Details/5
         [AllowAnonymous]
@@ -48,11 +49,11 @@ namespace MvcBook.Controllers
                 return NotFound();
             }
             var book = await _context.Books
-                .Include(b => b.Author)
-                .Include(b => b.Genre)
+                .Include(b => b.Authors)
+                .Include(b => b.Genres)
                 .FirstOrDefaultAsync(m => m.id == id);
             book.Comments = _context.Comments.Where(c => c.BookId == id).ToList();
-            
+
             foreach (var comment in book.Comments)
             {
                 book.Rating += comment.Rating;
@@ -71,19 +72,19 @@ namespace MvcBook.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(Comment comment)
         {
-            comment.UserId = User.Identity.Name;
+
             var dict = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
             var intnewRating = dict["rating"];
             var commentText = dict["CommentText"];
             var bookId = dict["id_name"];
+            var userName = dict["userName"];
             var intBookId = int.Parse(bookId);
-
-
+            comment.UserId = userName;
             comment.CommentText = commentText;
             comment.Rating = int.Parse(intnewRating);
             comment.BookId = intBookId;
             comment.Book = _context.Books.SingleOrDefault(b => b.id == intBookId);
-  
+
 
             if (!ModelState.IsValid)
             {
@@ -101,14 +102,14 @@ namespace MvcBook.Controllers
             return View(comment.Book);
 
         }
-       
-        
+
+
         // GET: Books/Create
         [Authorize(Policy = "AdminOnly")]
         public IActionResult Create()
         {
-            ViewData["AuthorId"] = new SelectList(_context.Authors, "AuthorId", nameof(Author.Name));
-            ViewData["GenreId"] = new SelectList(_context.Genres, "GenreId", nameof(Genre.Name));
+            ViewData["Authors"] = new MultiSelectList(_context.Authors, "AuthorId", nameof(Author.Name));
+            ViewData["Genres"] = new MultiSelectList(_context.Genres, "GenreId", nameof(Genre.Name));
             return View();
         }
 
@@ -117,15 +118,21 @@ namespace MvcBook.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,Title,Rating,Price,ImageUrl,AuthorId,GenreId")] Book book, string NewAuthorName)
+        public async Task<IActionResult> Create([Bind("id,Title,Rating,Price,ImageUrl")] Book book, int[] AuthorIds, int[] GenreIds, string NewAuthorName)
         {
+            var authorIdsList = AuthorIds.ToList();
             // create new author
             if (!string.IsNullOrEmpty(NewAuthorName))
             {
-                var newAuthor = new Author { Name = NewAuthorName };
-                _context.Authors.Add(newAuthor);
-                await _context.SaveChangesAsync();
-                book.AuthorId = (int)newAuthor.AuthorId;
+                var newAuthorNames = NewAuthorName.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var name in newAuthorNames)
+                {
+                    var newAuthor = new Author { Name = name.Trim() };
+                    _context.Authors.Add(newAuthor);
+                    await _context.SaveChangesAsync();
+                    authorIdsList.Add(newAuthor.AuthorId ?? 0);
+                }
+                AuthorIds = authorIdsList.ToArray();
             }
 
             ModelState.Remove("NewAuthorName");
@@ -140,12 +147,29 @@ namespace MvcBook.Controllers
             }
             if (ModelState.IsValid)
             {
+
+                foreach (var authorId in AuthorIds)
+                {
+                    var author = await _context.Authors.FindAsync(authorId);
+                    if (author != null)
+                    {
+                        book.Authors.Add(author);
+                    }
+                }
+                foreach (var genreId in GenreIds)
+                {
+                    var genre = await _context.Genres.FindAsync(genreId);
+                    if (genre != null)
+                    {
+                        book.Genres.Add(genre);
+                    }
+                }
                 _context.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorId"] = new SelectList(_context.Set<Author>(), "AuthorId", nameof(Author.Name), book.AuthorId);
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", nameof(Genre.Name), book.GenreId);
+            ViewData["Authors"] = new MultiSelectList(_context.Authors, "AuthorId", nameof(Author.Name), AuthorIds);
+            ViewData["Genres"] = new MultiSelectList(_context.Genres, "GenreId", nameof(Genre.Name), GenreIds);
             return View(book);
         }
 
@@ -163,8 +187,8 @@ namespace MvcBook.Controllers
             {
                 return NotFound();
             }
-            ViewData["AuthorId"] = new SelectList(_context.Authors, "AuthorId", nameof(Author.Name));
-            ViewData["GenreId"] = new SelectList(_context.Genres, "GenreId", nameof(Genre.Name));
+            ViewData["Authors"] = new MultiSelectList(_context.Authors, "AuthorId", nameof(Author.Name));
+            ViewData["Genres"] = new MultiSelectList(_context.Genres, "GenreId", nameof(Genre.Name));
             return View(book);
         }
 
@@ -173,19 +197,96 @@ namespace MvcBook.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,Title,Rating,Price,ImageUrl,AuthorId,GenreId")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("id,Title,Rating,Price,ImageUrl")] Book book, int[] AuthorIds, int[] GenreIds, string NewAuthorName)
         {
             if (id != book.id)
             {
                 return NotFound();
             }
 
+            ModelState.Remove("NewAuthorName");
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(book);
-                    await _context.SaveChangesAsync();
+                    var authorIdsList = AuthorIds.ToList();
+                    var genreIdsList = GenreIds.ToList();
+
+                    var existingBook = await _context.Books
+                    .Include(b => b.Authors)
+                    .Include(b => b.Genres)
+                    .FirstOrDefaultAsync(b => b.id == id);
+
+                    existingBook.Title = book.Title;
+                    existingBook.Rating = book.Rating;
+                    existingBook.Price = book.Price;
+                    existingBook.ImageUrl = book.ImageUrl;
+
+                    var existingAuthorIds = existingBook.Authors.Select(a => a.AuthorId).ToList();
+                    var existingGenreIds = existingBook.Genres.Select(g => g.GenreId).ToList();
+
+                    if (!string.IsNullOrEmpty(NewAuthorName))
+                    {
+                        var newAuthorNames = NewAuthorName.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var name in newAuthorNames)
+                        {
+                            var newAuthor = new Author { Name = name.Trim() };
+                            _context.Authors.Add(newAuthor);
+                            await _context.SaveChangesAsync();
+                            authorIdsList.Add(newAuthor.AuthorId ?? 0);
+                        }
+                        AuthorIds = authorIdsList.ToArray();
+                    }
+
+                    if (AuthorIds.Length > 0)
+                    {
+                        var authorsToAdd = AuthorIds.Where(a => !existingAuthorIds.Contains(a));
+                        var authorsToRemove = existingAuthorIds.Where(e => !authorIdsList.Contains((int)e));
+
+                        foreach (var authorId in authorsToAdd)
+                        {
+                            var author = await _context.Authors.FindAsync(authorId);
+                            if (author != null)
+                            {
+                                existingBook.Authors.Add(author);
+                            }
+                        }
+                        foreach (var authorId in authorsToRemove)
+                        {
+                            var author = existingBook.Authors.FirstOrDefault(a => a.AuthorId == authorId);
+                            if (author != null)
+                            {
+                                existingBook.Authors.Remove(author);
+                            }
+                        }
+                    }
+
+                    if (GenreIds.Length > 0)
+                    {
+                        var genresToAdd = GenreIds.Where(a => !existingGenreIds.Contains(a));
+                        var genresToRemove = existingGenreIds.Where(a => !genreIdsList.Contains((int)a));
+
+                        foreach (var genreId in genresToAdd)
+                        {
+                            var genre = await _context.Genres.FindAsync(genreId);
+                            if (genre != null)
+                            {
+                                existingBook.Genres.Add(genre);
+                            }
+                        }
+
+                        foreach (var genreId in genresToRemove)
+                        {
+                            var genre = existingBook.Genres.FirstOrDefault(g => g.GenreId == genreId);
+                            if (genre != null)
+                            {
+                                existingBook.Genres.Remove(genre);
+                            }
+                        }
+                    }
+
+                    _context.Update(existingBook);
+                    _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -198,10 +299,11 @@ namespace MvcBook.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorId"] = new SelectList(_context.Set<Author>(), "AuthorId", "AuthorId", book.AuthorId);
-            ViewData["GenreId"] = new SelectList(_context.Set<Genre>(), "GenreId", "GenreId", book.GenreId);
+            ViewData["Authors"] = new MultiSelectList(_context.Authors, "AuthorId", nameof(Author.Name), AuthorIds);
+            ViewData["Genres"] = new MultiSelectList(_context.Genres, "GenreId", nameof(Genre.Name), GenreIds);
             return View(book);
         }
 
@@ -215,8 +317,8 @@ namespace MvcBook.Controllers
             }
 
             var book = await _context.Books
-                .Include(b => b.Author)
-                .Include(b => b.Genre)
+                .Include(b => b.Authors)
+                .Include(b => b.Genres)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (book == null)
             {
@@ -240,14 +342,14 @@ namespace MvcBook.Controllers
             {
                 _context.Books.Remove(book);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool BookExists(int id)
         {
-          return (_context.Books?.Any(e => e.id == id)).GetValueOrDefault();
+            return (_context.Books?.Any(e => e.id == id)).GetValueOrDefault();
         }
 
 

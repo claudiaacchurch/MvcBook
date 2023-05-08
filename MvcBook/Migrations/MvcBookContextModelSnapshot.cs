@@ -22,6 +22,36 @@ namespace MvcBook.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("AuthorBook", b =>
+                {
+                    b.Property<int>("AuthorsAuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Booksid")
+                        .HasColumnType("int");
+
+                    b.HasKey("AuthorsAuthorId", "Booksid");
+
+                    b.HasIndex("Booksid");
+
+                    b.ToTable("AuthorBook");
+                });
+
+            modelBuilder.Entity("BookGenre", b =>
+                {
+                    b.Property<int>("Booksid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GenresGenreId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Booksid", "GenresGenreId");
+
+                    b.HasIndex("GenresGenreId");
+
+                    b.ToTable("BookGenre");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -248,12 +278,6 @@ namespace MvcBook.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -269,10 +293,6 @@ namespace MvcBook.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("GenreId");
 
                     b.ToTable("Books");
                 });
@@ -361,6 +381,10 @@ namespace MvcBook.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CartId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -415,6 +439,36 @@ namespace MvcBook.Migrations
                     b.ToTable("Orders");
                 });
 
+            modelBuilder.Entity("AuthorBook", b =>
+                {
+                    b.HasOne("MvcBook.Models.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorsAuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MvcBook.Models.Book", null)
+                        .WithMany()
+                        .HasForeignKey("Booksid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BookGenre", b =>
+                {
+                    b.HasOne("MvcBook.Models.Book", null)
+                        .WithMany()
+                        .HasForeignKey("Booksid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MvcBook.Models.Genre", null)
+                        .WithMany()
+                        .HasForeignKey("GenresGenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -466,25 +520,6 @@ namespace MvcBook.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MvcBook.Models.Book", b =>
-                {
-                    b.HasOne("MvcBook.Models.Author", "Author")
-                        .WithMany("Books")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MvcBook.Models.Genre", "Genre")
-                        .WithMany("Books")
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Genre");
-                });
-
             modelBuilder.Entity("MvcBook.Models.CartItem", b =>
                 {
                     b.HasOne("MvcBook.Models.Book", "Book")
@@ -511,19 +546,9 @@ namespace MvcBook.Migrations
                     b.Navigation("Book");
                 });
 
-            modelBuilder.Entity("MvcBook.Models.Author", b =>
-                {
-                    b.Navigation("Books");
-                });
-
             modelBuilder.Entity("MvcBook.Models.Book", b =>
                 {
                     b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("MvcBook.Models.Genre", b =>
-                {
-                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("MvcBook.Models.Order", b =>

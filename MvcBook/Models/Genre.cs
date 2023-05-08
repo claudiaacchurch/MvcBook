@@ -7,6 +7,6 @@ namespace MvcBook.Models
         [Key]
         public virtual int? GenreId { get; set; }
         public virtual string? Name { get; set; }
-        public virtual HashSet<Book> Books { get; set; } = new HashSet<Book>();
+        public virtual ICollection<Book> Books { get; set; } = new List<Book>();
     }
 }

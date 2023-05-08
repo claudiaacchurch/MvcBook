@@ -1,4 +1,5 @@
 ﻿@model MvcBook.Models.Book
+@using System.Security.Claims;
 
 @{
     ViewData["Title"] = "Details";
@@ -11,7 +12,19 @@
     <hr>
 
     <div class="small-details-row">
-        <small class="genre-margin">Found in:<a href="#"> @Html.DisplayFor(model => model.Genre.Name)</a></small>
+        <small class="genre-margin">
+            Found in:
+            @foreach (var genre in Model.Genres)
+            {
+                <a href="#">
+                    @Html.DisplayFor(model => genre.Name)
+                    @if (genre != Model.Genres.Last())
+                    {
+                    @Html.Raw(", ")
+                    }
+                </a>
+            }
+        </small>
     </div>
 
     <div class="small-details-flex">
@@ -22,10 +35,25 @@
         </div>
         <div class="small-details-col">
             <div>
-                <p class="detail-author">@Html.DisplayFor(model => model.Author.Name)</p>
+                <p class="detail-author">
+                    @foreach (var author in Model.Authors)
+                    {
+                        @Html.DisplayFor(model => author.Name)
+                        @if (author != Model.Authors.Last())
+                        {
+                            @Html.Raw(", ")
+                        }
+                    }
+                </p>
                 <p class="details-text">@Html.DisplayFor(model => model.Rating)/10 &#9733;</p>
                 <p class="details-text"><b>£@Html.DisplayFor(model => model.Price)</b></p>
                 <a class="item-buttons" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@Model.id">ADD TO CART</a>
+                @if(User.Claims.Any(claim => claim.Type == ClaimTypes.Email && claim.Value == "admin@gmail.com"))
+                {
+                    <a class="item-buttons" asp-controller="Books" asp-action="Edit" asp-route-id="@Model.id">Edit</a>
+                    <a class="item-buttons" asp-controller="Books" asp-action="Delete" asp-route-id="@Model.id">Delete</a>
+                }
+                
             </div>
 
         </div>
@@ -41,17 +69,18 @@
                     <p class="rate-header">Leave a Review: @Html.DisplayFor(model => model.Title)</p>
                 </div>
                 <input name="id_name" id="id_name" value="@Model.id" hidden>
+                <input type="text" name="userName" id="userName" placeholder="Name" required>
                 <div class="rating" id="rating">
-                    <input class="star1" type="radio" id="rating" name="rating" value="1" /><label for="star1">&#9733;</label>
-                    <input class="star2" type="radio" id="rating" name="rating" value="2" /><label for="star2">&#9733;</label>
-                    <input class="star3" type="radio" id="rating" name="rating" value="3" /><label for="star3">&#9733;</label>
-                    <input class="star4" type="radio" id="rating" name="rating" value="4" /><label for="star4">&#9733;</label>
-                    <input class="star5" type="radio" id="rating" name="rating" value="5" /><label for="star5">&#9733;</label>
-                    <input class="star6" type="radio" id="rating" name="rating" value="6" /><label for="star6">&#9733;</label>
-                    <input class="star7" type="radio" id="rating" name="rating" value="7" /><label for="star7">&#9733;</label>
-                    <input class="star8" type="radio" id="rating" name="rating" value="8" /><label for="star8">&#9733;</label>
-                    <input class="star9" type="radio" id="rating" name="rating" value="9" /><label for="star9">&#9733;</label>
-                    <input class="star10" type="radio" id="rating" name="rating" value="10" /><label for="star10">&#9733;</label>
+                    <input class="rating" type="radio" id="star1" name="rating" value="1" /><label for="star1">&#9733;</label>
+                    <input class="rating" type="radio" id="star2" name="rating" value="2" /><label for="star2">&#9733;</label>
+                    <input class="rating" type="radio" id="star3" name="rating" value="3" /><label for="star3">&#9733;</label>
+                    <input class="rating" type="radio" id="star4" name="rating" value="4" /><label for="star4">&#9733;</label>
+                    <input class="rating" type="radio" id="star5" name="rating" value="5" /><label for="star5">&#9733;</label>
+                    <input class="rating" type="radio" id="star6" name="rating" value="6" /><label for="star6">&#9733;</label>
+                    <input class="rating" type="radio" id="star7" name="rating" value="7" /><label for="star7">&#9733;</label>
+                    <input class="rating" type="radio" id="star8" name="rating" value="8" /><label for="star8">&#9733;</label>
+                    <input class="rating" type="radio" id="star9" name="rating" value="9" /><label for="star9">&#9733;</label>
+                    <input class="rating" type="radio" id="star10" name="rating" value="10" /><label for="star10">&#9733;</label>
                 </div>
                 <br />
                 <label for="CommentText" hidden="hidden"></label>

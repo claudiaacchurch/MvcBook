@@ -1,6 +1,4 @@
-﻿@using MvcBook.Models
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,7 +21,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MVCBOOK</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MvcBook</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -31,46 +29,45 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link nav-colors" asp-area="" asp-controller="Home" asp-action="Index">HOME</a>
+                            <a class="nav-link nav-colors" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
                             <div class="dropdown show large-dropdown">
-                                <a class="nav-link dropdown-toggle nav-colors" role="button" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false" asp-area="" asp-controller="Books" asp-action="Index">BOOKS</a>
+                                <a class="nav-link dropdown-toggle nav-colors" role="button" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false" asp-area="" asp-controller="Books" asp-action="Index">Books</a>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                     <div class="container-dropdown">
                                         <a class="dropdown-item" asp-controller="Books" asp-action="Index">All</a>
-                                        <p class="dropdown-item">Fiction</p>
-                                        
-                                        <a class="dropdown-item" href="#">Action & Adventure</a>
-                                        <a class="dropdown-item" href="#">Classics</a>
-                                        <a class="dropdown-item" href="#">Crime & Thriller</a>
-                                        <a class="dropdown-item" href="#">Fantasy</a>
-                                        <a class="dropdown-item" href="#">Graphic Novels & Manga</a>
-                                        <a class="dropdown-item" href="#">Hisotrical Fiction</a>
-                                        <a class="dropdown-item" href="#">Horror</a>
-                                        <a class="dropdown-item" href="#">Philosophy</a>
-                                        <a class="dropdown-item" href="#">Poetry</a>
-                                        <a class="dropdown-item" href="#">Romance</a>
-                                        <a class="dropdown-item" href="#">Sci-Fi</a>
-                                        <p class="dropdown-item">Non-Fiction</p>
-                                        <a class="dropdown-item" href="#">Art, Fashion & Photography</a>
-                                        <a class="dropdown-item" href="#">Biography</a>
-                                        <a class="dropdown-item" href="#">Business, Finance & Law</a>
-                                        <a class="dropdown-item" href="#">Computing & It</a>
-                                        <a class="dropdown-item" href="#">Food & Drink</a>
-                                        <a class="dropdown-item" href="#">History</a>
-                                        <a class="dropdown-item" href="#">Languages</a>
-                                        <a class="dropdown-item" href="#">Health, Wellbeing & Self-Help</a>
-                                        <a class="dropdown-item" href="#">Politics, Society & Culture</a>
-                                        <a class="dropdown-item" href="#">Science, Technology & Medicine</a>
-                                        <a class="dropdown-item" href="#">Spirituality & Religion</a>
-                                        <a class="dropdown-item" href="#">Travel</a>
-                                        <p class="dropdown-item">Children's</p>
-                                        <a class="dropdown-item" href="#">Baby & Pre-school</a>
-                                        <a class="dropdown-item" href="#">Ages 5-8</a>
-                                        <a class="dropdown-item" href="#">Ages 9-12</a>
-                                        <a class="dropdown-item" href="#">Teens & Young Adults</a>
 
+                                        <a class="dropdown-item" href="Books/#Fiction"><b>Fiction</b></a>
+                                        <a class="dropdown-item" href="Books/#Action & Adventure">Action & Adventure</a>
+                                        <a class="dropdown-item" href="Books/#Classics">Classics</a>
+                                        <a class="dropdown-item" href="Books/#Crime & Thriller">Crime & Thriller</a>
+                                        <a class="dropdown-item" href="Books/#Fantasy">Fantasy</a>
+                                        <a class="dropdown-item" href="Books/#Graphic Novels & Manga">Graphic Novels & Manga</a>
+                                        <a class="dropdown-item" href="Books/#Hisotrical Fiction">Hisotrical Fiction</a>
+                                        <a class="dropdown-item" href="Books/#Horror">Horror</a>
+                                        <a class="dropdown-item" href="Books/#Philosophy">Philosophy</a>
+                                        <a class="dropdown-item" href="Books/#Poetry">Poetry</a>
+                                        <a class="dropdown-item" href="Books/#Romance">Romance</a>
+                                        <a class="dropdown-item" href="Books/#Sci-Fi">Sci-Fi</a>
+                                        <a class="dropdown-item" href="Books/#Non-Fiction"><b>Non-Fiction</b></a>
+                                        <a class="dropdown-item" href="Books/#Art, Fashion & Photography">Art, Fashion & Photography</a>
+                                        <a class="dropdown-item" href="Books/#Biography">Biography</a>
+                                        <a class="dropdown-item" href="Books/#Business, Finance & Law">Business, Finance & Law</a>
+                                        <a class="dropdown-item" href="Books/#Computing & It">Computing & It</a>
+                                        <a class="dropdown-item" href="Books/#Food & Drink">Food & Drink</a>
+                                        <a class="dropdown-item" href="Books/#History">History</a>
+                                        <a class="dropdown-item" href="Books/#Languages">Languages</a>
+                                        <a class="dropdown-item" href="Books/#Health, Wellbeing & Self-Help">Health, Wellbeing & Self-Help</a>
+                                        <a class="dropdown-item" href="Books/#Politics, Society & Culture">Politics, Society & Culture</a>
+                                        <a class="dropdown-item" href="Books/#Science, Technology & Medicine">Science, Technology & Medicine</a>
+                                        <a class="dropdown-item" href="Books/#Spirituality & Religion">Spirituality & Religion</a>
+                                        <a class="dropdown-item" href="Books/#Travel">Travel</a>
+                                        <a class="dropdown-item" href="Books/#Children's Books"><b>Children's Books</b></a>
+                                        <a class="dropdown-item" href="Books/#Baby & Pre-school">Baby & Pre-school</a>
+                                        <a class="dropdown-item" href="Books/#Ages 5-8">Ages 5-8</a>
+                                        <a class="dropdown-item" href="Books/#Ages 9-12">Ages 9-12</a>
+                                        <a class="dropdown-item" href="Books/#Teens & Young Adults">Teens & Young Adults</a>
                                     </div>
                                 </div>
                             </div>
@@ -78,8 +75,9 @@
                     </ul>
                     <ul class="navbar nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link nav-colors" asp-area="" asp-controller="ShoppingCart" asp-action="Index">CART</a>
+                            <a class="nav-link nav-colors" asp-area="" asp-controller="ShoppingCart" asp-action="Index">Cart</a>
                         </li>
+ 
                         <li>
                             @{
                                 await Html.RenderPartialAsync("_LoginPartial", "Identity");

@@ -14,28 +14,23 @@ namespace MvcBook.Models
                 serviceProvider.GetRequiredService<
                     DbContextOptions<MvcBookContext>>()))
             {
-               
+
                 //authors and genres
 
-                if (context.Authors.Any())
-                {
-                    return;
-                }
-
-                context.Authors.AddRange(
-                    new Author() { Name = "J.K. Rowling" },
-                    new Author() { Name = "Charles Dickens" },
-                    new Author() { Name = "J.R.R. Tolkein" },
-                    new Author() { Name = "Stephen King" }
-                );
 
                 if (context.Genres.Any())
                 {
                     return;
                 }
                 context.Genres.AddRange(
-                    new Genre() { Name = "Action & Adventure" },
+
                     new Genre() { Name = "Children's Books" },
+                    new Genre() { Name = "Baby & Pre-school" },
+                    new Genre() { Name = "Ages 5-8" },
+                    new Genre() { Name = "Ages 9-12" },
+                    new Genre() { Name = "Teens & Young Adults" },
+                    new Genre() { Name = "Fiction" },
+                    new Genre() { Name = "Action & Adventure" },
                     new Genre() { Name = "Classics" },
                     new Genre() { Name = "Crime & Thriller" },
                     new Genre() { Name = "Fantasy" },
@@ -46,7 +41,7 @@ namespace MvcBook.Models
                     new Genre() { Name = "Poetry" },
                     new Genre() { Name = "Romance" },
                     new Genre() { Name = "Sci-Fi" },
-
+                    new Genre() { Name = "Non-Fiction" },
                     new Genre() { Name = "Art, Fashion & Photography" },
                     new Genre() { Name = "Biography" },
                     new Genre() { Name = "Business, Finance & Law" },
@@ -60,7 +55,21 @@ namespace MvcBook.Models
                     new Genre() { Name = "Spirituality & Religion" },
                     new Genre() { Name = "Travel" }
                );
+                
+                if (context.Authors.Any())
+                {
+                    return;
+                }
+
+                context.Authors.AddRange(
+                    new Author() { Name = "J.K. Rowling" },
+                    new Author() { Name = "Charles Dickens" },
+                    new Author() { Name = "J.R.R. Tolkein" },
+                    new Author() { Name = "Stephen King" }
+                );
+
                 context.SaveChanges();
+
             }
 
         }

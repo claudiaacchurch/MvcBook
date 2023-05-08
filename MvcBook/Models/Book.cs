@@ -12,10 +12,8 @@ namespace MvcBook.Models
         public virtual int Rating { get; set; }
         public virtual double Price { get; set; }
         public virtual string ImageUrl { get; set; } = string.Empty;
-        public virtual Author? Author { get; set; }
-        public virtual Genre? Genre { get; set; }
-        public virtual int AuthorId { get; set; }
-        public virtual int GenreId { get; set; }
+        public virtual ICollection<Author> Authors { get; set; } = new List<Author>();
+        public virtual ICollection<Genre> Genres { get; set; } = new List<Genre>();
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

@@ -1,0 +1,104 @@
+﻿@model MvcBook.Models.Order
+@{
+    ViewData["Title"] = "Confirm Order";
+}
+
+<h1 class="inner-details-title">Order Details for @Model.PaymentTransactionId:</h1>
+<form asp-controller="Payment" asp-action="ExecutePayment" method="post">
+    <input type="hidden" asp-for="OrderId" />
+    <input type="hidden" asp-for="PaymentTransactionId"/>
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.OrderId)
+                </th>
+                <td>
+                    @Html.DisplayFor(model => model.OrderId)
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Ship to
+                </th>
+                <td>
+                    @Html.DisplayFor(model => model.FirstName)
+                    @Html.DisplayFor(model => model.LastName)
+                </td>
+            </tr>
+            <tr>
+                <th>
+                </th>
+                <td>
+                    @Html.DisplayFor(model => model.Address)
+                    <br />
+                    @Html.DisplayFor(model => model.City)
+                    <br />
+                    @Html.DisplayFor(model => model.County)
+                    <br />
+                    @Html.DisplayFor(model => model.PostCode)
+                    <br />
+                    @Html.DisplayFor(model => model.Country)
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Phone)
+                </th>
+                <td>
+                    @Html.DisplayFor(model => model.Phone)
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <td>
+                    @Html.DisplayFor(model => model.Email)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h1 class="inner-details-title">
+        Review your cart:
+    </h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <p>Item</p>
+                </th>
+                <th>
+                    <p>Quantity</p>
+                <th>
+                    <p>Price</p>
+                </th>
+            </tr>
+
+            @foreach (CartItem item in Model.ShoppingCartItems)
+            {
+                <tr>
+                    <td>
+                        @item.Book.Title
+                    </td>
+                    <td>
+                        @item.Quantity
+                    </td>
+                    <td>
+                        @((item.Quantity * @item.Book.Price).ToString("C"))
+                    </td>
+                </tr>
+            }
+
+        </thead>
+        <tfoot>
+            <tr>
+                <td><strong>Order Total:</strong></td>
+                <td>@Model.Total.ToString("C")</td>
+
+            </tr>
+        </tfoot>
+    </table>
+    <button type="submit">Pay Now</button>
+</form>

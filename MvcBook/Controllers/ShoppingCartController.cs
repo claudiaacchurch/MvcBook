@@ -86,7 +86,7 @@ namespace MvcBook.Controllers
             return _context.ShoppingCartItems
                 .Where(c => c.CartId == ShoppingCartId)
                 .Include(c => c.Book)
-                .Include(c => c.Book.Author)
+                .Include(c => c.Book.Authors)
                 .ToList();
         }
 
@@ -130,7 +130,7 @@ namespace MvcBook.Controllers
         }
 
         //get
- 
+
         public ActionResult Checkout()
         {
             return View();
@@ -141,14 +141,15 @@ namespace MvcBook.Controllers
         public async Task<IActionResult> Checkout([Bind("FirstName,LastName,Address,City,County,PostCode,Country,Phone,Email")] Order order)
         {
 
-            order.OrderId = GetCartId();
+            order.OrderId = Guid.NewGuid().ToString();
             order.OrderDate = DateTime.Now;
             order.Username = GetUserName();
             order.PaymentTransactionId = "123";
             order.HasBeenShipped = false;
-            order.ShoppingCartItems = _context.ShoppingCartItems.Where(a => a.CartId == order.OrderId).Include(a => a.Book).ToList();
-            order.Total = order.ShoppingCartItems.Count;
-
+            order.CartId = GetCartId(); // Add the CartId property to the Order model
+            order.ShoppingCartItems = _context.ShoppingCartItems.Where(a => a.CartId == order.CartId).Include(a => a.Book).ToList();
+            order.Total = order.Total = (decimal)order.ShoppingCartItems.Sum(item => item.Quantity * item.Book.Price);
+            
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
@@ -161,11 +162,16 @@ namespace MvcBook.Controllers
             {
                 if (order.OrderId != "")
                 {
-                    return View("ConfirmOrder", order);
+                    _context.Add(order);
+                    await _context.SaveChangesAsync();
+                    // return View("ConfirmOrder", order);
+                    return RedirectToAction("CreatePayment", "Payment", new { orderId = order.OrderId });
                 }
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return View("ConfirmOrder", order);
+                else
+                {
+                    // Show an error message if the OrderId is empty
+                    ModelState.AddModelError(string.Empty, "Unable to process the order. Please try again.");
+                }
             }
             return View(order);
         }

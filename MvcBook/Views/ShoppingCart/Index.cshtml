@@ -3,40 +3,50 @@
     ViewBag.Title = "Shopping Cart";
 }
 
-<div id="ShoppingCartTitle" class="ContentHead">
-    <h1 class="inner-details-title">Shopping Cart</h1>
-</div>
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>Item</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Item Total</th>
-        </tr>
-    </thead>
-    <tbody>
+<h1 class="inner-details-title">Shopping Cart</h1>
+<hr />
 
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Book.Title - @item.Book.Author.Name</td>
-                <td>@item.Book.Price.ToString("C")</td>
-                <td> @item.Quantity</td>
-                <td>@((item.Quantity * item.Book.Price).ToString("C"))</td>
-                <td>
-                    <a asp-action="DeleteCartItem" asp-route-id="@item.ItemId">Remove</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="4"></td>
-            <td><strong>Order Total: </strong></td>
-            <td><strong>@(Model.Sum(item => item.Quantity * item.Book.Price).ToString("C"))</strong></td>
-        </tr>
-    </tfoot>
-</table>
-<a class="item-buttons" asp-controller="ShoppingCart" asp-action="Checkout">Checkout</a>
-<br />
+<div class="review-basket-flex">
+    @foreach (var item in Model)
+    {
+        <div class="basket-row first-col">
+            <div class="basket-col">
+                <img class="basket-img" src="@item.Book.ImageUrl" alt="@item.Book.Title">
+            </div>
+            <div class="basket-col first-col">
+                <div>@item.Book.Title</div>
+                <div>
+                @foreach (var author in item.Book.Authors)
+                {
+                    @author.Name
+                    @if (author != item.Book.Authors.Last())
+                    {
+                        @Html.Raw(", ")
+                    }
+                }
+                </div>
+                <div>£@item.Book.Price</div>
+                <div><a asp-action="DeleteCartItem" asp-route-id="@item.ItemId">Remove</a></div>
+             </div>
+            <div class="basket-col second-col">
+                <div>Qty</div>
+                <div>@item.Quantity</div>
+            </div>
+            <div class="basket-col second-col">
+                <div><b>£@(item.Quantity * item.Book.Price)</b></div>
+            </div>
+         </div>
+    }
+
+    <div class="delivery-end-flex">
+        <div>Total to pay: @(Model.Sum(item => item.Quantity * item.Book.Price).ToString("C"))</div>
+        <a class="item-buttons" asp-controller="ShoppingCart" asp-action="Checkout">Delivery</a>
+    </div>
+
+</div>
+
+
+
+
+
+               

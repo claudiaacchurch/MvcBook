@@ -1,0 +1,51 @@
+﻿@model IEnumerable<MvcBook.Models.Book>
+@using System.Security.Claims;
+
+@{
+    ViewData["Title"] = "Search Results";
+}
+
+<h1 class="inner-details-title">
+    Search Results:
+</h1>
+
+<table class="table">
+    <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+
+    @foreach (var book in Model)
+    {
+        <tr>
+            <td>
+                <img class="detail-image-small" src="@book.ImageUrl" alt="@book.Title">
+            </td>
+            <td>
+                <b><i>@book.Title</i></b>
+            </td>
+            <td>
+                @foreach (var author in book.Authors)
+                {
+                    @Html.DisplayFor(model => author.Name)
+                    @if (author != book.Authors.Last())
+                    {
+                        @Html.Raw(", ")
+                    }
+                }
+            </td>
+            <td>
+                £@book.Price
+                <br />
+                @if (User.Claims.Any(claim => claim.Type == ClaimTypes.Email && claim.Value == "admin@gmail.com"))
+                {
+                    <a class="item-buttons" asp-controller="Books" asp-action="Edit" asp-route-id="@book.id">Edit</a>
+                    <a class="item-buttons" asp-controller="Books" asp-action="Delete" asp-route-id="@book.id">Delete</a>
+                }
+            </td>
+        </tr>
+    }
+
+    </table>

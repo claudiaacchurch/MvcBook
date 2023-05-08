@@ -33,16 +33,16 @@
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Author" class="control-label"></label>
-                <select asp-for="AuthorId" class="form-control" asp-items="ViewBag.AuthorId"></select>
-                <label for="NewAuthorName" class="control-label">Or create new author:</label>
-                <input type="text" name="NewAuthorName" class="form-control" id="NewAuthorName" />
+           <div class="form-group">
+                <label class="control-label">Author(s)</label>
+                <select name="AuthorIds" class="form-control" asp-items="@(ViewData["Authors"] as MultiSelectList)" multiple></select>
+                <label for="NewAuthorName" class="control-label">Or create new author: (seperate by (", ")</label>
+                <textarea name="NewAuthorName" class="form-control" id="NewAuthorName" data-val="false"></textarea>
             </div>
             <div class="form-group">
-                <label asp-for="Genre" class="control-label"></label>
+                <label class="control-label">Genres</label>
                 <br />
-                <select asp-for="GenreId" class="custom-select" asp-items="ViewBag.GenreId"></select>
+                <select name="GenreIds" class="custom-select" asp-items="@(ViewData["Genres"] as MultiSelectList)" multiple></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

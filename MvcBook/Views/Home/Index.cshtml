@@ -4,11 +4,24 @@
 }
 
 <body>
-    <div class="text-center">
-        <h1 class="display-4 welcome-title">Welcome</h1>
-        <p class="sub-title">Explore the MvcBook Store</p>
+    <div class="overlay-container">
+        <div class="text-center">
+            <h1 class="display-4 welcome-title">Welcome to the MvcBook Store</h1>
+            <br />
+            <form asp-controller="Books" asp-action="Search">
+                <p class="search-title">
+                    <input class="search-bar" type="text" name="q" placeholder="Search for a Book or Author..." />
+                    <input type="submit" value="Search" />
+                </p>
+            </form>
+        </div>
+        <img class="library-img" src="~/lib/images/library.jpg" alt="library" />
+        <div class="explore-favorites">
+            <span class="favourites">Or explore our favorites...</span>
+        </div>
     </div>
 
+    <div class="book-index">
     <p class="home-titles">Daily Browse</p>
     <div class="scroll-container">
         <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
@@ -17,7 +30,7 @@
                 var rand = new Random();
                 int i = 0;
                 var randomPicks = Model.OrderBy(b => rand.Next());
-                var weeklyExplore = randomPicks.Where(r => r.Rating >= 5 && r.Genre.Name != "Children's Books" && r.Genre.Name != "Food & Drink");
+                var weeklyExplore = randomPicks.Where(r => r.Rating >= 5 && !r.Genres.Any(g => g.Name =="Children's Books" || g.Name == "Food & Drink"));
 
                 foreach (var item in weeklyExplore)
                 {
@@ -29,7 +42,16 @@
                             </div>
                         </div>
                         <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
-                        <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
+                        <p class="inner-item home-author">
+                            @foreach (var author in item.Authors)
+                            {
+                                @Html.DisplayFor(modelItem => author.Name)
+                                if (author != item.Authors.Last())
+                                {
+                                    @Html.Raw(", ")
+                                }
+                            }
+                        </p>
                     </div>
 
                     i++;
@@ -50,17 +72,7 @@
         <div class="container-flex">
             @{
                 int count = 0;
-                var favouriteBooks = Model.Where(g => g.Genre.Name == "Action & Adventure" ||
-                g.Genre.Name == "Classics" ||
-                g.Genre.Name == "Crime & Thriller" ||
-                g.Genre.Name == "Fantasy" ||
-                g.Genre.Name == "Graphic Novels & Manga" ||
-                g.Genre.Name == "Historical Fiction" ||
-                g.Genre.Name == "Horror" ||
-                g.Genre.Name == "Philosophy" ||
-                g.Genre.Name == "Poetry" ||
-                g.Genre.Name == "Romance" ||
-                g.Genre.Name == "Sci-Fi");
+                var favouriteBooks = Model.Where(b => b.Genres.Any(g => g.Name == "Fiction"));
 
                 foreach (var item in favouriteBooks)
                 {
@@ -72,7 +84,16 @@
                             </div>
                         </div>
                         <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
-                        <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
+                        <p class="inner-item home-author">
+                            @foreach (var author in item.Authors)
+                            {
+                                @Html.DisplayFor(modelItem => author.Name)
+                                if (author != item.Authors.Last())
+                                {
+                                    @Html.Raw(", ")
+                                }
+                            }
+                        </p>
                     </div>
 
                     count++;
@@ -92,19 +113,7 @@
         <div class="container-flex">
             @{
                 int secondCount = 0;
-                var nonFiction = Model.Where(g => g.Genre.Name == "Art, Fashion & Photography" ||
-                g.Genre.Name == "Biography" ||
-                g.Genre.Name == "Business, Finance & Law" ||
-                g.Genre.Name == "Computing & IT" ||
-                g.Genre.Name == "History" ||
-                g.Genre.Name == "Languages" ||
-                g.Genre.Name == "Health, Wellbeing & Self-Help" ||
-                g.Genre.Name == "Politics, Society & Culture" ||
-                g.Genre.Name == "Science, Technology & Medicine" ||
-                g.Genre.Name == "Spirituality & Religion" ||
-                g.Genre.Name == "Travel");
-
-
+                var nonFiction = Model.Where(b => b.Genres.Any(g => g.Name == "Non-Fiction"));
                 foreach (var item in nonFiction)
                 {
                     <div class="inner-flex image-text-container">
@@ -115,7 +124,17 @@
                             </div>
                         </div>
                         <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
-                        <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
+                        <p class="inner-item home-author">
+                            @foreach (var author in item.Authors)
+                            {
+                                @Html.DisplayFor(modelItem => author.Name)
+                                if (author != item.Authors.Last())
+                                {
+                                    @Html.Raw(", ")
+                                }
+
+                            }
+                        </p>
                     </div>
                     secondCount++;
                     if (secondCount > 10)
@@ -134,7 +153,7 @@
         <div class="container-flex">
             @{
                 int thirdCount = 0;
-                var foodDrink = Model.Where(g => g.Genre.Name == "Food & Drink");
+                var foodDrink = Model.Where(b => b.Genres.Any(g => g.Name == "Food & Drink"));
                 foreach (var item in foodDrink)
                 {
                     <div class="inner-flex image-text-container">
@@ -145,7 +164,17 @@
                             </div>
                         </div>
                         <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
-                        <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
+                        <p class="inner-item home-author">
+                            @foreach (var author in item.Authors)
+                            {
+                                @Html.DisplayFor(modelItem => author.Name)
+                                if (author != item.Authors.Last())
+                                {
+                                    @Html.Raw(", ")
+                                }
+
+                            }
+                        </p>
                     </div>
                     thirdCount++;
                     if (thirdCount > 10)
@@ -163,7 +192,7 @@
         <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
         <div class="container-flex">
             @{
-                var childrensChoice = Model.Where(g => g.Genre.Name == "Children's Books");
+                var childrensChoice = Model.Where(b => b.Genres.Any(g => g.GenreId <= 29));
                 var fourthCount = 0;
                 @foreach (var item in childrensChoice)
                 {
@@ -175,7 +204,17 @@
                             </div>
                         </div>
                         <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
-                        <p class="inner-item home-author">@Html.DisplayFor(modelItem => item.Author.Name)</p>
+                        <p class="inner-item home-author">
+                            @foreach (var author in item.Authors)
+                            {
+                                @Html.DisplayFor(modelItem => author.Name)
+                                if (author != item.Authors.Last())
+                                {
+                                    @Html.Raw(", ")
+                                }
+
+                            }
+                        </p>
                     </div>
 
                     fourthCount++;
@@ -188,7 +227,7 @@
         </div>
         <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
     </div>
-
+    </div>
     <!--JavaScript functions for scrollbar and to hide arrows as needed-->
     <script>
         function scrollContent(button, direction) {

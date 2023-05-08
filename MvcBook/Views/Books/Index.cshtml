@@ -1,76 +1,89 @@
-﻿@model IEnumerable<MvcBook.Models.Book>
+﻿@model IEnumerable<MvcBook.Models.Genre>
 @using System.Security.Claims;
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
-<p>
-    @if (User.Claims.Any(claim => claim.Type == ClaimTypes.Email && claim.Value == "admin@gmail.com"))
+@{
+    if(User.Claims.Any(claim => claim.Type == ClaimTypes.Email && claim.Value == "admin@gmail.com")) 
     {
-        <a asp-action="Create">Create New</a>
-    }
-   
-</p>
-
-<form asp-controller="Books" asp-action="Index">
-    <p>
-        Search by Title or Author: <input type="text" name="q" />
-        <input type="submit" value="Filter" />
-    </p>
-</form>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Genre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Genre.Name)
-            </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
-                    @if(User.Claims.Any(claim => claim.Type == ClaimTypes.Email && claim.Value == "admin@gmail.com"))
-                    {
-                        <a asp-action="Delete" asp-route-id="@item.id">Delete</a> 
-                        <a asp-action="Edit" asp-route-id="@item.id">Edit</a> 
-                    }
-            </td>
-        </tr>
+        <a class="item-buttons" asp-controller="Books" asp-action="Create">Add New Book</a>
+    };
 }
-    </tbody>
-</table>
+
+@foreach (var genre in Model)
+{
+    <section id="@genre.Name">
+    <p class="home-titles">@genre.Name</p>
+    <div class="scroll-container">
+        <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
+        <div class="container-flex">
+            @{
+               
+                var genreBooks = genre.Books.OrderBy(b => b.Rating);
+
+                foreach (var item in genreBooks)
+                {
+                    <div class="inner-flex image-text-container">
+                        <div class="image-home-effects">
+                            <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
+                            <div class="middle">
+                                <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
+                            </div>
+                        </div>
+                        <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
+                        <p class="inner-item home-author">
+                            @foreach (var author in item.Authors)
+                            {
+                                @Html.DisplayFor(modelItem => author.Name)
+                                if (author != item.Authors.Last())
+                                {
+                                    @Html.Raw(", ")
+                                }
+                            }
+                        </p>
+                    </div>
+                }
+            }
+        </div>
+        <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
+    </div>
+    </section>
+}
+
+
+<script>
+    function scrollContent(button, direction) {
+        const scrollSpeed = 300;
+        const container = button.parentElement.querySelector('.container-flex');
+        container.scrollBy({ left: direction * scrollSpeed, behavior: 'smooth' });
+        setTimeout(() => updateArrowsVisibility(container), 300);
+    }
+
+    function updateArrowsVisibility(container) {
+        const leftArrow = container.parentElement.querySelector('.scroll-btn.left');
+        const rightArrow = container.parentElement.querySelector('.scroll-btn.right');
+
+        // left arrow
+        if (container.scrollLeft > 0) {
+            leftArrow.style.display = 'block';
+        } else {
+            leftArrow.style.display = 'none';
+        }
+
+        // right arrow
+        if (container.scrollLeft < container.scrollWidth - container.clientWidth) {
+            rightArrow.style.display = 'block';
+        } else {
+            rightArrow.style.display = 'none';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.container-flex').forEach((container) => {
+            updateArrowsVisibility(container);
+            container.addEventListener('scroll', () => updateArrowsVisibility(container));
+        });
+    });
+</script>

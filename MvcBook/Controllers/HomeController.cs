@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using MvcBook.Data;
 using MvcBook.Models;
 
@@ -21,9 +23,17 @@ namespace MvcBook.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-            var mvcBookContext = _context.Books.Include(b => b.Author).Include(b => b.Genre);
+            var mvcBookContext = _context.Books.Include(b => b.Authors).Include(b => b.Genres);
             var sortedBooks = mvcBookContext.OrderByDescending(b => b.Rating).ToList();
-            return View(sortedBooks);
+            if (sortedBooks == null)
+            {
+                return View();
+            }
+            else
+            {
+                return View(sortedBooks);
+            }
+
         }
 
         public IActionResult Privacy()
