@@ -1,23 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using MimeKit;
 using MvcBook.Data;
 using MvcBook.Models;
+using System.Net;
+using Order = MvcBook.Models.Order;
+using FluentEmail.Core;
+using Microsoft.EntityFrameworkCore;
 using PayPalCheckoutSdk.Core;
 using PayPalCheckoutSdk.Orders;
-using System.Net;
-using MailKit;
-using Order = MvcBook.Models.Order;
-using MailKit.Security;
-using MailKit.Net.Smtp;
-using SendGrid.Helpers.Mail;
-using Microsoft.Identity.Client;
-using System.Web.Razor;
-using RazorLight;
-using FluentEmail.Core;
-using FluentEmail.Smtp;
-using Microsoft.Extensions.Options;
 
 namespace MvcBook.Controllers
 {
@@ -120,9 +111,14 @@ namespace MvcBook.Controllers
             };
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> ConfirmOrder(string orderId, string token)
         {
-            var order = _context.Orders.FirstOrDefault(o => o.OrderId == orderId);
+            var order = _context.Orders
+                .Include(o => o.ShoppingCartItems)
+                .ThenInclude(s => s.Book)
+                .ThenInclude(b => b.Authors)
+                .FirstOrDefault(o => o.OrderId == orderId);
             order.PaymentTransactionId = token;
             await _context.SaveChangesAsync();
             if (order == null)
@@ -138,7 +134,11 @@ namespace MvcBook.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ExecutePayment(string orderId, string token)
         {
-            var order = _context.Orders.FirstOrDefault(o => o.OrderId == orderId);
+            var order = _context.Orders
+                .Include(o => o.ShoppingCartItems)
+                .ThenInclude(s => s.Book)
+                .ThenInclude(b => b.Authors)
+                .FirstOrDefault(o => o.OrderId == orderId);
            
             if (order == null)
             {
@@ -159,8 +159,17 @@ namespace MvcBook.Controllers
                     if (result.Status == "COMPLETED")
                     {
                         //confimation of payment
-                        SendEmail(order);
-                        return View("Success", order);
+                        var emailResponse = await SendEmail(order) as ContentResult;
+                        if (emailResponse.Content == "created")
+                        {
+                            Console.WriteLine("success");
+                            return View("Success", order);
+   
+                        }
+                        else
+                        {
+                            return View("PaymentError"); //error handling here
+                        }
                     }
                 }
             }
@@ -177,33 +186,42 @@ namespace MvcBook.Controllers
 
         }
 
-        public IActionResult SendEmail(Order order)
+        [AllowAnonymous]
+        public async Task<IActionResult> SendEmail(Order order)
         {
-
-            var email = _emailSender
-                .To("claudiachurch68@icloud.com")
-                .Subject("Order Confirmation #" + order.OrderId)
-                .UsingTemplateFromFile($"{Directory.GetCurrentDirectory()}/Views/Payment/Success.cshtml", order)
-                .SendAsync();
-
-            if (email.IsCompletedSuccessfully)
+            try
             {
-                Console.WriteLine("success");
+                await _emailSender
+                    .To("claudiachurch68@icloud.com")
+                    .Subject("Your order confirmation")
+                    .UsingTemplateFromFile($"{Directory.GetCurrentDirectory()}/Views/Payment/Email.cshtml", order)
+                    .SendAsync();
+
+                return new ContentResult
+                {
+                    StatusCode = (int)HttpStatusCode.Created, //  201
+                    Content = "created",
+                    ContentType = "text/plain",
+                };
             }
-            else
+            catch (Exception ex)
             {
-                return View("PaymentError"); //error handling here
+                _logger.LogError($"Error: {ex}");
+                return new ContentResult
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError, // 500
+                    Content = "error",
+                    ContentType = "text/plain",
+                };
             }
-            return View("Success");
 
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> PaymentError()
         {
             return View();
         }
     }
-
-
 
 }

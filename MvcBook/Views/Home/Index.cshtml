@@ -4,265 +4,329 @@
 }
 
 <body>
-    <div class="overlay-container">
-        <div class="text-center">
-            <h1 class="display-4 welcome-title">Welcome to the MvcBook Store</h1>
-            <br />
-            <form asp-controller="Books" asp-action="Search">
-                <p class="search-title">
-                    <input class="search-bar" type="text" name="q" placeholder="Search for a Book or Author..." />
-                    <input type="submit" value="Search" />
-                </p>
-            </form>
-        </div>
-        <img class="library-img" src="~/lib/images/library.jpg" alt="library" />
-        <div class="explore-favorites">
-            <span class="favourites">Or explore our favorites...</span>
-        </div>
+
+    <div id="cartPreviewModal" style="display: none;">
+        <div id="cartPreviewContent"></div>
+        <button onclick="document.getElementById('cartPreviewModal').style.display='none'">Close</button>
     </div>
 
-    <div class="book-index">
-    <p class="home-titles">Daily Browse</p>
-    <div class="scroll-container">
-        <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
-        <div class="container-flex">
-            @{
-                var rand = new Random();
-                int i = 0;
-                var randomPicks = Model.OrderBy(b => rand.Next());
-                var weeklyExplore = randomPicks.Where(r => r.Rating >= 5 && !r.Genres.Any(g => g.Name =="Children's Books" || g.Name == "Food & Drink"));
+    <div class="home-page-container">
 
-                foreach (var item in weeklyExplore)
-                {
-                    <div class="inner-flex image-text-container">
-                        <div class="image-home-effects">
-                            <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
-                            <div class="middle">
-                                <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
+        <div class="row image-home-container">
+            <div class="col-lg-12">
+                <div class="overlay-container text-center">
+                    <h1 class="welcome-title">Welcome to the MvcBook Store</h1>
+                    <br />
+                    <form asp-controller="Books" asp-action="Search">
+                        <p class="search-title">
+                            <input class="search-bar" type="text" name="q" placeholder="Search Book or Author..." />
+                            <input type="submit" value="Search" />
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="book-index">
+
+            <section id="browse-favourites">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p class="home-titles">Daily Browse</p>
+                        <div class="scroll-container">
+                            <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
+                            <div class="container-flex">
+                                @{
+                                    var rand = new Random();
+                                    int i = 0;
+                                    var randomPicks = Model.OrderBy(b => rand.Next());
+                                    var weeklyExplore = randomPicks.Where(r => r.Rating >= 5 && !r.Genres.Any(g => g.Name == "Children's Books" || g.Name == "Food & Drink"));
+
+                                    foreach (var item in weeklyExplore)
+                                    {
+                                        <div class="inner-flex image-text-container">
+                                            <div class="image-home-effects">
+                                                <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
+                                                <div class="middle">
+                                                    <a href="/ShoppingCart/AddToCart?id=@item.id" class="middle-text addToCart">Add to Cart</a>
+                                                </div>
+                                                <p class="inner-item home-book-titles">@(item.Title.Length > 40 ? item.Title.Substring(0, 40) + "..." : item.Title)</p>
+                                                <p class="inner-item">
+                                                    @foreach (var author in item.Authors)
+                                                    {
+                                                        @Html.DisplayFor(modelItem => author.Name)
+                                                        if (author != item.Authors.Last())
+                                                        {
+                                                            @Html.Raw(", ")
+                                                        }
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        i++;
+                                        if (i > 10)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                            </div>
+                            <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="home-titles">Popular Fiction</p>
+                            <div class="scroll-container">
+                                <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
+                                <div class="container-flex">
+                                                        @{
+                                                            int count = 0;
+                                                            var favouriteBooks = Model.Where(b => b.Genres.Any(g => g.Name == "Fiction"));
+
+                                                            foreach (var item in favouriteBooks)
+                                                            {
+                                            <div class="inner-flex image-text-container">
+                                                <div class="image-home-effects">
+                                                    <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
+                                                    <div class="middle">
+                                                        <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
+                                                    </div>
+                                                </div>
+                                                <p class="inner-item home-book-titles">@(item.Title.Length > 40 ? item.Title.Substring(0, 40) + "..." : item.Title)</p>
+                                                <p class="inner-item">
+                                                                        @foreach (var author in item.Authors)
+                                                                        {
+                                                                            @Html.DisplayFor(modelItem => author.Name)
+                                                                            if (author != item.Authors.Last())
+                                                                            {
+                                                                                @Html.Raw(", ")
+                                                                            }
+                                                                        }
+                                                </p>
+                                            </div>
+
+                                                                count++;
+                                                                if (count > 10)
+                                                                {
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                </div>
+                                <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
                             </div>
                         </div>
-                        <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
-                        <p class="inner-item home-author">
-                            @foreach (var author in item.Authors)
-                            {
-                                @Html.DisplayFor(modelItem => author.Name)
-                                if (author != item.Authors.Last())
-                                {
-                                    @Html.Raw(", ")
-                                }
-                            }
-                        </p>
                     </div>
 
-                    i++;
-                    if (i > 10)
-                    {
-                        break;
-                    }
-                }
-            }
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="home-titles"> Best in Non-Fiction</p>
+                            <div class="scroll-container">
+                                <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
+                                <div class="container-flex">
+                                                        @{
+                                                            int secondCount = 0;
+                                                            var nonFiction = Model.Where(b => b.Genres.Any(g => g.Name == "Non-Fiction"));
+                                                            foreach (var item in nonFiction)
+                                                            {
+                                            <div class="inner-flex image-text-container">
+                                                <div class="image-home-effects">
+                                                    <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
+                                                    `<div class="middle">
+                                                        <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
+                                                    </div>
+                                                </div>
+                                                <p class="inner-item home-book-titles">@(item.Title.Length > 40 ? item.Title.Substring(0, 40) + "..." : item.Title)</p>
+                                                <p class="inner-item">
+                                                                        @foreach (var author in item.Authors)
+                                                                        {
+                                                                            @Html.DisplayFor(modelItem => author.Name)
+                                                                            if (author != item.Authors.Last())
+                                                                            {
+                                                                                @Html.Raw(", ")
+                                                                            }
 
-        </div>
-        <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
-    </div>
-
-    <p class="home-titles">Popular Fiction</p>
-    <div class="scroll-container">
-        <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
-        <div class="container-flex">
-            @{
-                int count = 0;
-                var favouriteBooks = Model.Where(b => b.Genres.Any(g => g.Name == "Fiction"));
-
-                foreach (var item in favouriteBooks)
-                {
-                    <div class="inner-flex image-text-container">
-                        <div class="image-home-effects">
-                            <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
-                            <div class="middle">
-                                <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
+                                                                        }
+                                                </p>
+                                            </div>
+                                                                secondCount++;
+                                                                if (secondCount > 10)
+                                                                {
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                </div>
+                                <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
                             </div>
                         </div>
-                        <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
-                        <p class="inner-item home-author">
-                            @foreach (var author in item.Authors)
-                            {
-                                @Html.DisplayFor(modelItem => author.Name)
-                                if (author != item.Authors.Last())
-                                {
-                                    @Html.Raw(", ")
-                                }
-                            }
-                        </p>
                     </div>
 
-                    count++;
-                    if (count > 10)
-                    {
-                        break;
-                    }
-                }
-            }
-        </div>
-        <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
-    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="home-titles">Best in Food & Drink</p>
+                            <div class="scroll-container">
+                                <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
+                                <div class="container-flex">
+                                                        @{
+                                                            int thirdCount = 0;
+                                                            var foodDrink = Model.Where(b => b.Genres.Any(g => g.Name == "Food & Drink"));
+                                                            foreach (var item in foodDrink)
+                                                            {
+                                            <div class="inner-flex image-text-container">
+                                                <div class="image-home-effects">
+                                                    <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
+                                                    <div class="middle">
+                                                        <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
+                                                    </div>
+                                                </div>
+                                                <p class="inner-item home-book-titles">@(item.Title.Length > 40 ? item.Title.Substring(0, 40) + "..." : item.Title)</p>
+                                                <p class="inner-item">
+                                                                        @foreach (var author in item.Authors)
+                                                                        {
+                                                                            @Html.DisplayFor(modelItem => author.Name)
+                                                                            if (author != item.Authors.Last())
+                                                                            {
+                                                                                @Html.Raw(", ")
+                                                                            }
 
-    <p class="home-titles"> Best in Non-Fiction</p>
-    <div class="scroll-container">
-        <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
-        <div class="container-flex">
-            @{
-                int secondCount = 0;
-                var nonFiction = Model.Where(b => b.Genres.Any(g => g.Name == "Non-Fiction"));
-                foreach (var item in nonFiction)
-                {
-                    <div class="inner-flex image-text-container">
-                        <div class="image-home-effects">
-                            <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
-                            `<div class="middle">
-                                <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
+                                                                        }
+                                                </p>
+                                            </div>
+                                                                thirdCount++;
+                                                                if (thirdCount > 10)
+                                                                {
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                </div>
+                                <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
                             </div>
                         </div>
-                        <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
-                        <p class="inner-item home-author">
-                            @foreach (var author in item.Authors)
-                            {
-                                @Html.DisplayFor(modelItem => author.Name)
-                                if (author != item.Authors.Last())
-                                {
-                                    @Html.Raw(", ")
-                                }
-
-                            }
-                        </p>
                     </div>
-                    secondCount++;
-                    if (secondCount > 10)
-                    {
-                        break;
-                    }
-                }
-            }
-        </div>
-        <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
-    </div>
 
-    <p class="home-titles">Best in Food & Drink</p>
-    <div class="scroll-container">
-        <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
-        <div class="container-flex">
-            @{
-                int thirdCount = 0;
-                var foodDrink = Model.Where(b => b.Genres.Any(g => g.Name == "Food & Drink"));
-                foreach (var item in foodDrink)
-                {
-                    <div class="inner-flex image-text-container">
-                        <div class="image-home-effects">
-                            <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
-                            <div class="middle">
-                                <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="home-titles">Best in Children's</p>
+                            <div class="scroll-container">
+                                <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
+                                <div class="container-flex">
+                                                        @{
+                                                            var childrensChoice = Model.Where(b => b.Genres.Any(g => g.GenreId <= 29));
+                                                            var fourthCount = 0;
+                                                            @foreach (var item in childrensChoice)
+                                                            {
+                                            <div class="inner-flex image-text-container">
+                                                <div class="image-home-effects">
+                                                    <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
+                                                    <div class="middle">
+                                                        <button class="middle-text add-to-cart" data-id="@item.id">Add to Cart</button>
+                                                    </div>
+                                                </div>
+                                                <p class="inner-item home-book-titles">@(item.Title.Length > 40 ? item.Title.Substring(0, 40) + "..." : item.Title)</p>
+                                                <p class="inner-item">
+                                                                        @foreach (var author in item.Authors)
+                                                                        {
+                                                                            @Html.DisplayFor(modelItem => author.Name)
+                                                                            if (author != item.Authors.Last())
+                                                                            {
+                                                                                @Html.Raw(", ")
+                                                                            }
+
+                                                                        }
+                                                </p>
+                                            </div>
+
+                                                                fourthCount++;
+                                                                @if (fourthCount > 10)
+                                                                {
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                </div>
+                                <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
                             </div>
                         </div>
-                        <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
-                        <p class="inner-item home-author">
-                            @foreach (var author in item.Authors)
-                            {
-                                @Html.DisplayFor(modelItem => author.Name)
-                                if (author != item.Authors.Last())
-                                {
-                                    @Html.Raw(", ")
-                                }
-
-                            }
-                        </p>
                     </div>
-                    thirdCount++;
-                    if (thirdCount > 10)
-                    {
-                        break;
+                </div>
+            </div>
+
+            <!--JavaScript functions for scrollbar and to hide arrows as needed-->
+            <script>
+                function scrollContent(button, direction) {
+                    const scrollSpeed = 300;
+                    const container = button.parentElement.querySelector('.container-flex');
+                    container.scrollBy({ left: direction * scrollSpeed, behavior: 'smooth' });
+                    setTimeout(() => updateArrowsVisibility(container), 300);
+                }
+
+                function updateArrowsVisibility(container) {
+                    const leftArrow = container.parentElement.querySelector('.scroll-btn.left');
+                    const rightArrow = container.parentElement.querySelector('.scroll-btn.right');
+
+                    // left arrow
+                    if (container.scrollLeft > 0) {
+                        leftArrow.style.display = 'block';
+                    } else {
+                        leftArrow.style.display = 'none';
+                    }
+
+                    // right arrow
+                    if (container.scrollLeft < container.scrollWidth - container.clientWidth) {
+                        rightArrow.style.display = 'block';
+                    } else {
+                        rightArrow.style.display = 'none';
                     }
                 }
-            }
-        </div>
-        <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
-    </div>
 
-    <p class="home-titles">Best in Children's</p>
-    <div class="scroll-container">
-        <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
-        <div class="container-flex">
-            @{
-                var childrensChoice = Model.Where(b => b.Genres.Any(g => g.GenreId <= 29));
-                var fourthCount = 0;
-                @foreach (var item in childrensChoice)
-                {
-                    <div class="inner-flex image-text-container">
-                        <div class="image-home-effects">
-                            <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
-                            <div class="middle">
-                                <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
-                            </div>
-                        </div>
-                        <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
-                        <p class="inner-item home-author">
-                            @foreach (var author in item.Authors)
-                            {
-                                @Html.DisplayFor(modelItem => author.Name)
-                                if (author != item.Authors.Last())
-                                {
-                                    @Html.Raw(", ")
-                                }
+                document.addEventListener('DOMContentLoaded', () => {
+                    document.querySelectorAll('.container-flex').forEach((container) => {
+                        updateArrowsVisibility(container);
+                        container.addEventListener('scroll', () => updateArrowsVisibility(container));
+                    });
+                });
 
+                // JavaScript functions to return cart preview on "add to cart"
+
+                $(document).ready(function () {
+                    $(".add-to-cart").click(function (e) {
+                        e.preventDefault();
+
+                        // Send an AJAX request to add the item to the cart
+                        $.ajax({
+                            url: '/ShoppingCart/AddToCart', // URL of your AddToCart method
+                            type: 'POST',
+                            data: { id: $(this).data('id') }, // Assuming the button has a data-id attribute with the product ID
+                            success: function (response) {
+                                // On success, get the cart preview
+                                $.ajax({
+                                    url: '/ShoppingCart/GetCartPreview', // URL of your GetCartPreview method
+                                    type: 'GET',
+                                    success: function (cart) {
+                                        // Update the cart preview popup
+                                        // You need to implement this function based on how you want to show the cart preview
+                                        updateCartPreview(cart);
+                                    }
+                                });
                             }
-                        </p>
-                    </div>
+                        });
+                    });
+                });
 
-                    fourthCount++;
-                    @if (fourthCount > 10)
-                    {
-                        break;
-                    }
+                function updateCartPreview(cart) {
+                    // Update the cart preview popup
+
+                    $('#cart-preview').html(/* Generate the HTML for the cart preview using the cart data */);
                 }
-            }
-        </div>
-        <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
-    </div>
-    </div>
-    <!--JavaScript functions for scrollbar and to hide arrows as needed-->
-    <script>
-        function scrollContent(button, direction) {
-            const scrollSpeed = 300;
-            const container = button.parentElement.querySelector('.container-flex');
-            container.scrollBy({ left: direction * scrollSpeed, behavior: 'smooth' });
-            setTimeout(() => updateArrowsVisibility(container), 300);
-        }
-
-        function updateArrowsVisibility(container) {
-            const leftArrow = container.parentElement.querySelector('.scroll-btn.left');
-            const rightArrow = container.parentElement.querySelector('.scroll-btn.right');
-
-            // left arrow
-            if (container.scrollLeft > 0) {
-                leftArrow.style.display = 'block';
-            } else {
-                leftArrow.style.display = 'none';
-            }
-
-            // right arrow
-            if (container.scrollLeft < container.scrollWidth - container.clientWidth) {
-                rightArrow.style.display = 'block';
-            } else {
-                rightArrow.style.display = 'none';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.container-flex').forEach((container) => {
-                updateArrowsVisibility(container);
-                container.addEventListener('scroll', () => updateArrowsVisibility(container));
-            });
-        });
-    </script>
-</body>
+            </script>
+        </body>
 
 

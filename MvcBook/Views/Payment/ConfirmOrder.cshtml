@@ -3,102 +3,68 @@
     ViewData["Title"] = "Confirm Order";
 }
 
-<h1 class="inner-details-title">Order Details for @Model.PaymentTransactionId:</h1>
-<form asp-controller="Payment" asp-action="ExecutePayment" method="post">
-    <input type="hidden" asp-for="OrderId" />
-    <input type="hidden" asp-for="PaymentTransactionId"/>
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.OrderId)
-                </th>
-                <td>
-                    @Html.DisplayFor(model => model.OrderId)
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Ship to
-                </th>
-                <td>
-                    @Html.DisplayFor(model => model.FirstName)
-                    @Html.DisplayFor(model => model.LastName)
-                </td>
-            </tr>
-            <tr>
-                <th>
-                </th>
-                <td>
-                    @Html.DisplayFor(model => model.Address)
-                    <br />
-                    @Html.DisplayFor(model => model.City)
-                    <br />
-                    @Html.DisplayFor(model => model.County)
-                    <br />
-                    @Html.DisplayFor(model => model.PostCode)
-                    <br />
-                    @Html.DisplayFor(model => model.Country)
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Phone)
-                </th>
-                <td>
-                    @Html.DisplayFor(model => model.Phone)
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Email)
-                </th>
-                <td>
-                    @Html.DisplayFor(model => model.Email)
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<div class="email-section section-head">
+    <p>Review Order: @Model.OrderId</p>
+    <br />
+</div>
 
-    <h1 class="inner-details-title">
-        Review your cart:
-    </h1>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    <p>Item</p>
-                </th>
-                <th>
-                    <p>Quantity</p>
-                <th>
-                    <p>Price</p>
-                </th>
-            </tr>
+<div class="flex-col-email">
 
-            @foreach (CartItem item in Model.ShoppingCartItems)
+    <div class="email-section-order">
+        <div class="email-titles"> Cart Summary </div>
+        <div class="inner-info">
+            @foreach (var item in Model.ShoppingCartItems)
             {
-                <tr>
-                    <td>
-                        @item.Book.Title
-                    </td>
-                    <td>
-                        @item.Quantity
-                    </td>
-                    <td>
-                        @((item.Quantity * @item.Book.Price).ToString("C"))
-                    </td>
-                </tr>
+                <div class="row row-section">
+                    <div class="col-lg-3 col-sm-3">
+                        <img class="basket-img" src="@item.Book.ImageUrl" alt="@item.Book.Title">
+                    </div>
+                    <div class="col-lg-4 col-sm-4">
+                        <p>@item.Book.Title</p>
+                        @foreach (var author in item.Book.Authors)
+                        {
+                            @Html.DisplayFor(model => author.Name)
+                            @if (author != item.Book.Authors.Last())
+                            {
+                                @Html.Raw(", ")
+                            }
+                        }
+                    </div>
+
+                    <div class="col-lg-3 col-sm-3">
+                        <p>@item.Quantity</p>
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        <p>@((item.Quantity * item.Book.Price).ToString("C"))</p>
+                    </div>
+                </div>
             }
+            <div><b>Order Total: @Model.Total.ToString("C")</b></div>
+        </div>
+    </div>
 
-        </thead>
-        <tfoot>
-            <tr>
-                <td><strong>Order Total:</strong></td>
-                <td>@Model.Total.ToString("C")</td>
+    <div class="email-section-delivery">
+        <div class="email-titles"> Delivery Details</div>
+        <div class="inner-info">
+            <div>@Model.FirstName @Model.LastName</div>
+            <div>@Model.Address</div>
+            <div>@Model.City</div>
+            <div>@Model.County</div>
+            <div>@Model.PostCode</div>
+            <div>@Model.Country</div>
+            <div>@Model.Email</div>
+            <div>@Model.Phone</div>
+        </div>
+    </div>
 
-            </tr>
-        </tfoot>
-    </table>
-    <button type="submit">Pay Now</button>
-</form>
+    <form asp-controller="Payment" asp-action="ExecutePayment" method="post">
+        <input type="hidden" asp-for="OrderId" />
+        <input type="hidden" asp-for="PaymentTransactionId" />
+        <button type="submit" class="btn btn-primary item-buttons complete-payment">Complete Payment</button>
+    </form>
+
+</div>
+
+
+
+

@@ -3,71 +3,91 @@
 @{
     ViewData["Title"] = "Checkout";
 }
-
-<h1 class="inner-details-title">Delivery Details: </h1>
-<hr />
-    @using (Html.BeginForm("Checkout", "ShoppingCart", FormMethod.Post))
-    {
-    <div class="delivery-container-flex-col">
-        <div asp-action-summary="ModelOnly" class="text-danger"></div>
-        <div class="delivery-row">
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="shopping-cart-page">
+        <h1 class="inner-details-title">Delivery Details: </h1>
+        <hr />
+        <div class="delivery-form">
+            @using (Html.BeginForm("Checkout", "ShoppingCart", FormMethod.Post))
+            {
+                <div class="delivery-container-flex-col">
+                    <div asp-action-summary="ModelOnly" class="text-danger"></div>
+                    <div class="delivery-row">
+                        <div class="form-group">
+                            <label asp-for="FirstName" class="control-label"></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LastName" class="control-label"></label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="delivery-row">
+                        <div class="form-group">
+                            <label asp-for="Email" class="control-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Phone" class="control-label"></label>
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="delivery-row">
+                        <div class="form-group">
+                            <label asp-for="Address" class="control-label"></label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="City" class="control-label"></label>
+                            <input asp-for="City" class="form-control" />
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="delivery-row">
+                        <div class="form-group">
+                            <label asp-for="County" class="control-label"></label>
+                            <input asp-for="County" class="form-control" />
+                            <span asp-validation-for="County" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PostCode" class="control-label"></label>
+                            <input asp-for="PostCode" class="form-control" />
+                            <span asp-validation-for="PostCode" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="delivery-row">
+                        <div class="form-group">
+                            <label asp-for="Country" class="control-label"></label>
+                            <input asp-for="Country" class="form-control" />
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+                        <div class="paypal-button" id="paypal-button-container">
+                            <input type="submit" id="CheckoutImageBtn"
+                                   src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif"
+                                   alt="Check out with PayPal"
+                                   style="border: none; background: transparent;" />
+                        </div>
+                        <br />
+                    </div>
+                </div>
+            }
         </div>
-        <div class="delivery-row">
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="delivery-row">
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="delivery-row">
-            <div class="form-group">
-                <label asp-for="County" class="control-label"></label>
-                <input asp-for="County" class="form-control" />
-                <span asp-validation-for="County" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PostCode" class="control-label"></label>
-                <input asp-for="PostCode" class="form-control" />
-                <span asp-validation-for="PostCode" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="delivery-row">
-            <div class="form-group">
-                <label asp-for="Country" class="control-label"></label>
-                <input asp-for="Country" class="form-control" />
-                <span asp-validation-for="Country" class="text-danger"></span>
-            </div>
-            <div class="form-group submit-payment-btn">
-                <input type="submit" value="Payment" class="btn btn-primary" />
-            </div>
-        </div>
-        <br />
     </div>
-    }
+    <script src="https://www.paypal.com/sdk/js?client-id=AdgeWz3s-kJllHB-TdTCGqKDJAY_kGNmq4BgUMLvRoncQstOkUlEhyi4hn_ntREMzUKBenCeTPa_dXjx"></script>
+    <script>
+        paypal.Buttons({
+            createOrder: function (data, actions) {
+                // This function sets up the details of the transaction, including the amount and line item details.
+                return
+            }
+        }).render('#paypal-button-container');
+    </script>
+</body>

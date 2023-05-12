@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MvcBook.Data;
+using MvcBook.Migrations;
 using MvcBook.Models;
 
 namespace MvcBook.Controllers
@@ -12,6 +13,7 @@ namespace MvcBook.Controllers
         private readonly IHttpContextAccessor _contextAccessor;
         public string ShoppingCartId { get; set; }
         public const string CartSessionKey = "CartId";
+        public const string UserId = "UserId";
 
         public ShoppingCartController(MvcBookContext context, IHttpContextAccessor contextAccessor)
         {
@@ -24,6 +26,13 @@ namespace MvcBook.Controllers
         {
             var cartItems = GetCartItems();
             return View(cartItems);
+        }
+
+        [HttpGet]
+        public IActionResult GetCartPreview()
+        {
+            var cart = GetCartItems();
+            return Json(cart);
         }
 
         [AllowAnonymous]
@@ -92,7 +101,19 @@ namespace MvcBook.Controllers
 
         private string GetUserName()
         {
-            return User.Identity.Name;
+            if (HttpContext.Session.GetString(UserId) == null)
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    HttpContext.Session.SetString(UserId, User.Identity.Name);
+                }
+                else
+                {
+                    Guid tempCartId = Guid.NewGuid();
+                    HttpContext.Session.SetString(UserId, tempCartId.ToString());
+                }
+            }
+            return HttpContext.Session.GetString(UserId);
         }
 
         public void MigrateCart(string userName)
@@ -106,6 +127,7 @@ namespace MvcBook.Controllers
             _context.SaveChanges();
         }
 
+        [AllowAnonymous]
         public async Task<ActionResult> DeleteCartItem(string id)
         {
             if (_context.ShoppingCartItems == null)
@@ -130,12 +152,19 @@ namespace MvcBook.Controllers
         }
 
         //get
-
         public ActionResult Checkout()
         {
             return View();
         }
 
+        [AllowAnonymous]
+        //get for guest checkout
+        public ActionResult GuestCheckout()
+        {
+            return View("Checkout");
+        }
+
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout([Bind("FirstName,LastName,Address,City,County,PostCode,Country,Phone,Email")] Order order)
@@ -149,7 +178,6 @@ namespace MvcBook.Controllers
             order.CartId = GetCartId(); // Add the CartId property to the Order model
             order.ShoppingCartItems = _context.ShoppingCartItems.Where(a => a.CartId == order.CartId).Include(a => a.Book).ToList();
             order.Total = order.Total = (decimal)order.ShoppingCartItems.Sum(item => item.Quantity * item.Book.Price);
-            
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
@@ -175,6 +203,8 @@ namespace MvcBook.Controllers
             }
             return View(order);
         }
+
+
     }
 
 }

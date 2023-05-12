@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MvcBook.Models.Genre>
+﻿@model IEnumerable<MvcBook.Models.Book>
 @using System.Security.Claims;
 
 @{
@@ -6,84 +6,47 @@
 }
 
 @{
-    if(User.Claims.Any(claim => claim.Type == ClaimTypes.Email && claim.Value == "admin@gmail.com")) 
+    if (User.Claims.Any(claim => claim.Type == ClaimTypes.Email && claim.Value == "admin@gmail.com"))
     {
         <a class="item-buttons" asp-controller="Books" asp-action="Create">Add New Book</a>
     };
 }
 
-@foreach (var genre in Model)
-{
-    <section id="@genre.Name">
-    <p class="home-titles">@genre.Name</p>
-    <div class="scroll-container">
-        <button class="scroll-btn left" onclick="scrollContent(this, -1)"></button>
-        <div class="container-flex">
-            @{
-               
-                var genreBooks = genre.Books.OrderBy(b => b.Rating);
+<body>
+    <div class="genre-page">
 
-                foreach (var item in genreBooks)
-                {
-                    <div class="inner-flex image-text-container">
-                        <div class="image-home-effects">
-                            <a asp-controller="Books" asp-action="Details" asp-route-id="@item.id"><img class="inner-item inner-image" src="@item.ImageUrl" alt="@item.Title"></a>
-                            <div class="middle">
-                                <a class="middle-text" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.id">Add to Cart</a>
-                            </div>
-                        </div>
-                        <p class="inner-item home-book-titles">@Html.DisplayFor(modelItem => item.Title)</p>
-                        <p class="inner-item home-author">
-                            @foreach (var author in item.Authors)
+        <div class="genre-page-titles">
+            <h1 class="inner-details-title genre-title">Browse all @ViewBag.GenreName</h1>
+            <form id="search-form" asp-controller="Books" asp-action="Index">
+                <input type="hidden" name="g" value="@ViewBag.GenreName" />
+                <p class="search-genre">
+                    <input class="search-bar-genre" type="text" name="q" placeholder="Search for a Book or Author..." />
+                    <input type="submit" value="Search" />
+                </p>
+            </form>
+        </div>
+
+        <div class="genre-container-flex">
+            @foreach (var book in Model)
+            {
+                <div class="genre-container-col">
+                    <img class="genre-image" src="@book.ImageUrl" alt="@book.Title">
+                    <p class="genre-detail genre-book-title text-center">@(book.Title.Length > 40 ? book.Title.Substring(0, 40) + "..." : book.Title)</p>
+                    <p glass="genre-detail text-center genre-genres">
+                        @foreach (var author in book.Authors)
+                        {
+                            @Html.DisplayFor(modelItem => author.Name)
+                            if (author != book.Authors.Last())
                             {
-                                @Html.DisplayFor(modelItem => author.Name)
-                                if (author != item.Authors.Last())
-                                {
-                                    @Html.Raw(", ")
-                                }
+                                @Html.Raw(", ")
                             }
-                        </p>
-                    </div>
-                }
+                        }
+                    </p>
+                    <p class="genre-detail">@book.Price.ToString("C")</p>
+                    <a class="genre-detail detail-btn" asp-controller="Books" asp-action="Details" asp-route-id="@book.id">Details</a>
+                    <a class="genre-detail cart-btn" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@book.id">Add to Cart</a>
+                </div>
             }
         </div>
-        <button class="scroll-btn right" onclick="scrollContent(this, 1)"></button>
     </div>
-    </section>
-}
-
-
-<script>
-    function scrollContent(button, direction) {
-        const scrollSpeed = 300;
-        const container = button.parentElement.querySelector('.container-flex');
-        container.scrollBy({ left: direction * scrollSpeed, behavior: 'smooth' });
-        setTimeout(() => updateArrowsVisibility(container), 300);
-    }
-
-    function updateArrowsVisibility(container) {
-        const leftArrow = container.parentElement.querySelector('.scroll-btn.left');
-        const rightArrow = container.parentElement.querySelector('.scroll-btn.right');
-
-        // left arrow
-        if (container.scrollLeft > 0) {
-            leftArrow.style.display = 'block';
-        } else {
-            leftArrow.style.display = 'none';
-        }
-
-        // right arrow
-        if (container.scrollLeft < container.scrollWidth - container.clientWidth) {
-            rightArrow.style.display = 'block';
-        } else {
-            rightArrow.style.display = 'none';
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.container-flex').forEach((container) => {
-            updateArrowsVisibility(container);
-            container.addEventListener('scroll', () => updateArrowsVisibility(container));
-        });
-    });
-</script>
+</body>

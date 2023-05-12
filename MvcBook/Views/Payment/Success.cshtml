@@ -1,4 +1,6 @@
 ﻿@model MvcBook.Models.Order
+@using System.Linq
+
 
 <!DOCTYPE html>
 <html>
@@ -11,7 +13,7 @@
         <div class="email-section section-head">
             <h1 class="inner-details-title">Hi @Model.FirstName, thank you for your order!</h1>
             <br />
-            <p>Your order has been confirmed and is on its way. Please keep this receipt for your records.</p>
+            <p>Your order has been processed, we will let you know when it's out for delivery!</p>
 
         </div>
 
@@ -29,44 +31,62 @@
                     <div>@Model.OrderId</div>
                     <div>@Model.OrderDate</div>
                     <div>£2.99</div>
-                    <div>£@Model.Total</div>
+                    <div>@Model.Total.ToString("C")</div>
                     <div>@Model.PaymentTransactionId</div>
                 </div>
             </div>
         </div>
 
+        <div class="email-section-order">
+            <div class="email-titles"> Cart Summary </div>
+            <div class="inner-info">
+                @foreach (var item in Model.ShoppingCartItems)
+                {
+                    <div class="row row-section">
+                        <div class="col-lg-3 col-sm-3">
+                            <img class="basket-img" src="@item.Book.ImageUrl" alt="@item.Book.Title">
+                        </div>
+                        <div class="col-lg-4 col-sm-4">
+                            <p>@item.Book.Title</p>
+                            @{
+                                var authorsList = item.Book.Authors.ToList();
+                                for (var i = 0; i < authorsList.Count; i++)
+                                {
+                                    @authorsList[i].Name
+                                    @if (i != authorsList.Count - 1)
+                                    {
+                                        @:,
+                                    }
+
+                                }
+                            }
+                        </div>
+
+                        <div class="col-lg-3 col-sm-3">
+                            <p>@item.Quantity</p>
+                        </div>
+                        <div class="col-lg-2 col-sm-2">
+                            <p>@((item.Quantity * item.Book.Price).ToString("C"))</p>
+                        </div>
+                    </div>
+                }
+                <div><b>Order Total: @Model.Total.ToString("C")</b></div>
+            </div>
+        </div>
+
         <div class="email-section-delivery">
             <div class="email-titles"> Delivery Details</div>
-            <div>@Model.FirstName @Model.LastName</div>
-            <div>@Model.Email</div>
-            <div>@Model.Phone</div>
-            <div>@Model.Address</div>
-            <div>@Model.City</div>
-            <div>@Model.County</div>
-            <div>@Model.PostCode</div>
-            <div>@Model.Country</div>
-        </div>
- 
-        @foreach (var item in Model.ShoppingCartItems)
-        {
-            <div class="row">
-                <div class="col-lg-3 col-sm-3">
-                    <p>@item.CartId</p>
-                </div>
-                <div class="col-lg-3 col-sm-3">
-                    <p>
-                        @item.Book.Title
-
-                    </p>
-                </div>
-                <div class="col-lg-3 col-sm-3">
-                    <p>@item.Quantity</p>
-                </div>
-                <div class="col-lg-3 col-sm-3">
-                    <p>@(item.Quantity * item.Book.Price)</p>
-                </div>
+            <div class="inner-info">
+                <div>@Model.FirstName @Model.LastName</div>
+                <div>@Model.Address</div>
+                <div>@Model.City</div>
+                <div>@Model.County</div>
+                <div>@Model.PostCode</div>
+                <div>@Model.Country</div>
+                <div>@Model.Email</div>
+                <div>@Model.Phone</div>
             </div>
-        }
+        </div>
 
         <p>If you have any questions about your order, please contact us at mvcbook@example.com.</p>
         <p>Thanks again for your business!</p>

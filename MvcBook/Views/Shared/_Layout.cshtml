@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/MvcBook.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
     <!--font awesome-->
-    <script src="https://kit.fontawesome.com/2307716659.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <!--google fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,38 +36,37 @@
                                 <a class="nav-link dropdown-toggle nav-colors" role="button" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false" asp-area="" asp-controller="Books" asp-action="Index">Books</a>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                     <div class="container-dropdown">
-                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index">All</a>
 
-                                        <a class="dropdown-item" href="Books/#Fiction"><b>Fiction</b></a>
-                                        <a class="dropdown-item" href="Books/#Action & Adventure">Action & Adventure</a>
-                                        <a class="dropdown-item" href="Books/#Classics">Classics</a>
-                                        <a class="dropdown-item" href="Books/#Crime & Thriller">Crime & Thriller</a>
-                                        <a class="dropdown-item" href="Books/#Fantasy">Fantasy</a>
-                                        <a class="dropdown-item" href="Books/#Graphic Novels & Manga">Graphic Novels & Manga</a>
-                                        <a class="dropdown-item" href="Books/#Hisotrical Fiction">Hisotrical Fiction</a>
-                                        <a class="dropdown-item" href="Books/#Horror">Horror</a>
-                                        <a class="dropdown-item" href="Books/#Philosophy">Philosophy</a>
-                                        <a class="dropdown-item" href="Books/#Poetry">Poetry</a>
-                                        <a class="dropdown-item" href="Books/#Romance">Romance</a>
-                                        <a class="dropdown-item" href="Books/#Sci-Fi">Sci-Fi</a>
-                                        <a class="dropdown-item" href="Books/#Non-Fiction"><b>Non-Fiction</b></a>
-                                        <a class="dropdown-item" href="Books/#Art, Fashion & Photography">Art, Fashion & Photography</a>
-                                        <a class="dropdown-item" href="Books/#Biography">Biography</a>
-                                        <a class="dropdown-item" href="Books/#Business, Finance & Law">Business, Finance & Law</a>
-                                        <a class="dropdown-item" href="Books/#Computing & It">Computing & It</a>
-                                        <a class="dropdown-item" href="Books/#Food & Drink">Food & Drink</a>
-                                        <a class="dropdown-item" href="Books/#History">History</a>
-                                        <a class="dropdown-item" href="Books/#Languages">Languages</a>
-                                        <a class="dropdown-item" href="Books/#Health, Wellbeing & Self-Help">Health, Wellbeing & Self-Help</a>
-                                        <a class="dropdown-item" href="Books/#Politics, Society & Culture">Politics, Society & Culture</a>
-                                        <a class="dropdown-item" href="Books/#Science, Technology & Medicine">Science, Technology & Medicine</a>
-                                        <a class="dropdown-item" href="Books/#Spirituality & Religion">Spirituality & Religion</a>
-                                        <a class="dropdown-item" href="Books/#Travel">Travel</a>
-                                        <a class="dropdown-item" href="Books/#Children's Books"><b>Children's Books</b></a>
-                                        <a class="dropdown-item" href="Books/#Baby & Pre-school">Baby & Pre-school</a>
-                                        <a class="dropdown-item" href="Books/#Ages 5-8">Ages 5-8</a>
-                                        <a class="dropdown-item" href="Books/#Ages 9-12">Ages 9-12</a>
-                                        <a class="dropdown-item" href="Books/#Teens & Young Adults">Teens & Young Adults</a>
+                                        <a class="dropdown-item book-headers" asp-controller="Books" asp-action="Index" asp-route-g="Fiction"><b>Fiction</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Action & Adventure"><b>Action & Adventure</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Classics"><b>Classics</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Crime & Thriller"><b>Crime & Thriller</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Graphic Novels & Manga"><b>Graphic Novels & Manga</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Hisotrical Fiction"><b>Hisotrical Fiction</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Horror"><b>Horror</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Philosophy"><b>Philosophy</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Poetry"><b>Poetry</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Romance"><b>Romance</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Sci-Fi"><b>Sci-Fi</b></a>
+                                        <a class="dropdown-item book-headers" asp-controller="Books" asp-action="Index" asp-route-g="Non-Fiction"><b>Non-Fiction</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Art, Fashion & Photography"><b>Art, Fashion & Photography</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Biography"><b>Biography</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Business, Finance & Law"><b>Business, Finance & Law</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Computing & It"><b>Computing & It</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Food & Drink"><b>Food & Drink</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="History"><b>History</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Languages"><b>Languages</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Health, Wellbeing & Self-Help"><b>Health, Wellbeing & Self-Help</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Politics, Society & Culture"><b>Politics, Society & Culture</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Science, Technology & Medicine"><b>Science, Technology & Medicine</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Spirituality & Religion"><b>Spirituality & Religion</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Travel"><b>Travel</b></a>
+                                        <a class="dropdown-item book-headers" asp-controller="Books" asp-action="Index" asp-route-g="Children's Books"><b>Children's Books</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Baby & Pre-school"><b>Baby & Pre-school</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Ages 5-8"><b>Ages 5-8</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Ages 9-12"><b>Ages 9-12</b></a>
+                                        <a class="dropdown-item" asp-controller="Books" asp-action="Index" asp-route-g="Teens & Young Adults"><b>Teens & Young Adults</b></a>
+
                                     </div>
                                 </div>
                             </div>
@@ -75,9 +74,9 @@
                     </ul>
                     <ul class="navbar nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link nav-colors" asp-area="" asp-controller="ShoppingCart" asp-action="Index">Cart</a>
+                            <a class="nav-link nav-colors" asp-area="" asp-controller="ShoppingCart" asp-action="Index" asp-route-id="">Cart</a>
                         </li>
- 
+
                         <li>
                             @{
                                 await Html.RenderPartialAsync("_LoginPartial", "Identity");
@@ -95,8 +94,17 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - MvcBook </a>
+        <div class="footer-flex">
+            <div>
+                <a>&copy; 2023 - MvcBook</a>
+            </div>
+            <div>
+                <a href="https://www.facebook.com" class="fab fa-facebook-square fa-2x social-media-icons"></a>
+
+                <a href="https://www.twitter.com" class="fab fa-twitter-square fa-2x social-media-icons"></a>
+
+                <a href="https://www.instagram.com" class="fab fa-instagram-square fa-2x social-media-icons"></a>
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

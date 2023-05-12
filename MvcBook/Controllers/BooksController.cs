@@ -19,11 +19,22 @@ namespace MvcBook.Controllers
 
         // GET: Books
         [AllowAnonymous]
-        public IActionResult Index()
+        public IActionResult Index(string g, string q = null)
         {
-            List<Genre> genres = _context.Genres.Include(g => g.Books).ToList();
-            return View(genres);
+            var books = _context.Books
+                .Include(b => b.Authors)
+                .Include(b => b.Genres)
+                .Where(b => b.Genres.Any(genre => genre.Name == g));
+
+            if (!string.IsNullOrEmpty(q))
+            {
+                books = books.Where(b => b.Title.Contains(q) ||
+                b.Authors.Any(a => a.Name.Contains(q)));
+            }
+            ViewBag.GenreName = g;
+            return View(books);
         }
+
 
         [AllowAnonymous]
         public IActionResult Search(string q) 
@@ -37,6 +48,8 @@ namespace MvcBook.Controllers
             }
 
             results = results.OrderBy(b => b.Title).Take(10);
+            ViewBag.Search = q;
+            ViewBag.Count = results.Count();
             return View(results.ToList());
         }
 

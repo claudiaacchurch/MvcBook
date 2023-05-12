@@ -5,112 +5,109 @@
     ViewData["Title"] = "Details";
 }
 
-<div class="details-flex">
+<div class="details-page">
+    @if (User.Claims.Any(claim => claim.Type == ClaimTypes.Email && claim.Value == "admin@gmail.com"))
+    {
+        <a class="item-buttons" asp-controller="Books" asp-action="Edit" asp-route-id="@Model.id">Edit</a>
+        <a class="item-buttons" asp-controller="Books" asp-action="Delete" asp-route-id="@Model.id">Delete</a>
+    }
+    <div class="details-flex">
 
-    <h1 class="inner-details-title">@Html.DisplayFor(model => model.Title)</h1>
+        <h1 class="inner-details-title">@Html.DisplayFor(model => model.Title)</h1>
+        
+        <hr>
 
-    <hr>
-
-    <div class="small-details-row">
-        <small class="genre-margin">
-            Found in:
-            @foreach (var genre in Model.Genres)
-            {
-                <a href="#">
-                    @Html.DisplayFor(model => genre.Name)
-                    @if (genre != Model.Genres.Last())
-                    {
-                    @Html.Raw(", ")
-                    }
-                </a>
-            }
-        </small>
-    </div>
-
-    <div class="small-details-flex">
-        <div class="small-details-col">
-            <div class="small-details-row">
-                <img class="detail-image" src="@Model.ImageUrl" alt="@Model.Title">
-            </div>
-        </div>
-        <div class="small-details-col">
-            <div>
-                <p class="detail-author">
-                    @foreach (var author in Model.Authors)
-                    {
-                        @Html.DisplayFor(model => author.Name)
-                        @if (author != Model.Authors.Last())
+        <div class="small-details-row">
+            <small class="genre-margin">
+                Found in:
+                @foreach (var genre in Model.Genres)
+                {
+                    <a href="#">
+                        @Html.DisplayFor(model => genre.Name)
+                        @if (genre != Model.Genres.Last())
                         {
                             @Html.Raw(", ")
                         }
-                    }
-                </p>
-                <p class="details-text">@Html.DisplayFor(model => model.Rating)/10 &#9733;</p>
-                <p class="details-text"><b>£@Html.DisplayFor(model => model.Price)</b></p>
-                <a class="item-buttons" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@Model.id">ADD TO CART</a>
-                @if(User.Claims.Any(claim => claim.Type == ClaimTypes.Email && claim.Value == "admin@gmail.com"))
-                {
-                    <a class="item-buttons" asp-controller="Books" asp-action="Edit" asp-route-id="@Model.id">Edit</a>
-                    <a class="item-buttons" asp-controller="Books" asp-action="Delete" asp-route-id="@Model.id">Delete</a>
+                    </a>
                 }
-                
-            </div>
-
+            </small>
         </div>
-    </div>
 
-    <hr />
-    <div class="inner-details comment-flex">
-        <div class="inner-comment comment-title">
+        <div class="small-details-flex">
+            <div class="small-details-col">
+                <div class="small-details-row">
+                    <img class="detail-image" src="@Model.ImageUrl" alt="@Model.Title">
+                </div>
+            </div>
+            <div class="small-details-col">
+                    <p class="detail-author">
+                        @foreach (var author in Model.Authors)
+                        {
+                            @Html.DisplayFor(model => author.Name)
+                            @if (author != Model.Authors.Last())
+                            {
+                                @Html.Raw(", ")
+                            }
+                        }
+                    </p>
+                    <p class="details-text">@Html.DisplayFor(model => model.Rating)/10 &#9733;</p>
+                <p class="details-text"><b>@Model.Price.ToString("C")</b></p>
+                    <a class="cart-btn text-center" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@Model.id">ADD TO CART</a>
+            </div>
+        </div>
 
-            @using (Html.BeginForm("Details", "Books", FormMethod.Post))
+        <hr />
+        <div class="inner-details comment-flex">
+            <div>
+
+                @using (Html.BeginForm("Details", "Books", FormMethod.Post))
+                {
+                    <div>
+                        <p class="rate-header">Leave a Review: @Html.DisplayFor(model => model.Title)</p>
+                    </div>
+                    <input name="id_name" id="id_name" value="@Model.id" hidden>
+                    <input type="text" name="userName" id="userName" placeholder="Name" required>
+                    <div class="rating" id="rating">
+                        <input class="rating" type="radio" id="star1" name="rating" value="1" /><label for="star1">&#9733;</label>
+                        <input class="rating" type="radio" id="star2" name="rating" value="2" /><label for="star2">&#9733;</label>
+                        <input class="rating" type="radio" id="star3" name="rating" value="3" /><label for="star3">&#9733;</label>
+                        <input class="rating" type="radio" id="star4" name="rating" value="4" /><label for="star4">&#9733;</label>
+                        <input class="rating" type="radio" id="star5" name="rating" value="5" /><label for="star5">&#9733;</label>
+                        <input class="rating" type="radio" id="star6" name="rating" value="6" /><label for="star6">&#9733;</label>
+                        <input class="rating" type="radio" id="star7" name="rating" value="7" /><label for="star7">&#9733;</label>
+                        <input class="rating" type="radio" id="star8" name="rating" value="8" /><label for="star8">&#9733;</label>
+                        <input class="rating" type="radio" id="star9" name="rating" value="9" /><label for="star9">&#9733;</label>
+                        <input class="rating" type="radio" id="star10" name="rating" value="10" /><label for="star10">&#9733;</label>
+                    </div>
+                    <br />
+                    <label for="CommentText" hidden="hidden"></label>
+                    <textarea id="CommentText" name="CommentText" rows="4" cols="50" placeholder="Write your review here..."></textarea>
+                    <br />
+                    <input type="submit" class="cart-btn" value="Submit Review!" />
+                }
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="inner-details comment-flex">
+
+            <h1 class="rate-header">What Others Have Said ...</h1>
+
+            @foreach (Comment comment in Model.Comments)
             {
-                <div class="rating-head">
-                    <p class="rate-header">Leave a Review: @Html.DisplayFor(model => model.Title)</p>
+                <div class="comments-flex">
+                    <div class="comments-row">
+                        <div class="part1">@comment.UserId</div>
+                        <div class="part1"> @comment.Rating &#9733</div>
+                        <div class="part2"> @comment.CommentText</div>
+                    </div>
                 </div>
-                <input name="id_name" id="id_name" value="@Model.id" hidden>
-                <input type="text" name="userName" id="userName" placeholder="Name" required>
-                <div class="rating" id="rating">
-                    <input class="rating" type="radio" id="star1" name="rating" value="1" /><label for="star1">&#9733;</label>
-                    <input class="rating" type="radio" id="star2" name="rating" value="2" /><label for="star2">&#9733;</label>
-                    <input class="rating" type="radio" id="star3" name="rating" value="3" /><label for="star3">&#9733;</label>
-                    <input class="rating" type="radio" id="star4" name="rating" value="4" /><label for="star4">&#9733;</label>
-                    <input class="rating" type="radio" id="star5" name="rating" value="5" /><label for="star5">&#9733;</label>
-                    <input class="rating" type="radio" id="star6" name="rating" value="6" /><label for="star6">&#9733;</label>
-                    <input class="rating" type="radio" id="star7" name="rating" value="7" /><label for="star7">&#9733;</label>
-                    <input class="rating" type="radio" id="star8" name="rating" value="8" /><label for="star8">&#9733;</label>
-                    <input class="rating" type="radio" id="star9" name="rating" value="9" /><label for="star9">&#9733;</label>
-                    <input class="rating" type="radio" id="star10" name="rating" value="10" /><label for="star10">&#9733;</label>
-                </div>
-                <br />
-                <label for="CommentText" hidden="hidden"></label>
-                <textarea id="CommentText" name="CommentText" rows="4" cols="50" placeholder="Write your review here..."></textarea>
-                <br />
-                <input type="submit" class="btn review-submit" value="Submit Review!" />
             }
         </div>
+
     </div>
-
-    <hr />
-
-    <div class="inner-details comment-flex">
-
-        <h1 class="rate-header">What Others Have Said ...</h1>
-
-        @foreach (Comment comment in Model.Comments)
-        {
-            <div class="comments-flex">
-                <div class="comments-row">
-                    <div class="part1">@comment.UserId</div>
-                    <div class="part1"> @comment.Rating &#9733</div>
-                    <div class="part2"> @comment.CommentText</div>
-                </div>
-            </div>
-        }
-    </div>
-
 </div>
-
 <!-- jquery for star radio boxes -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {

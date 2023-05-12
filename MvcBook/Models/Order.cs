@@ -7,7 +7,7 @@ namespace MvcBook.Models
     public class Order
     {
         [Key]
-        [DisplayName("Transaction Id")]
+        [DisplayName("Order Number")]
         public string OrderId { get; set; } = string.Empty;
         public string CartId { get; set; } = string.Empty;
 		[DataType(DataType.Date)]

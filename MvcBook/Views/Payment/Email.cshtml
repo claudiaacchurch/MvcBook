@@ -1,0 +1,114 @@
+﻿@model MvcBook.Models.Order
+@using System.Linq
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+       <style>
+           body{background-color:pink;}
+       </style>
+    </head>
+
+<body>
+    <div class="col">
+        <h2 style="text-align:center;">Hi @Model.FirstName, thank you for your order!</h2>
+        <p style="text-align:center;">Your order has been confirmed and is on its way. Please keep this receipt for your records.</p>
+    </div>
+    <table>
+        <tr>Order Summary</tr>
+        <tr>
+            <td>Order Number: </td>
+            <td>@Model.OrderId</td>
+        </tr>
+        <tr>
+            <td>Order Date: </td>
+            <td>@Model.OrderDate</td>
+        </tr>
+        <tr>
+            <td>Delivery: </td>
+            <td>£2.99</td>
+        </tr>
+        <tr>
+            <td>Total Cost: </td>
+            <td>@Model.Total.ToString("C")</td>
+        </tr>
+        <tr>
+            <td>Paypal Transaction Number: </td>
+            <td>@Model.PaymentTransactionId</td>
+        </tr>
+    </table>
+    <br />
+
+    <table>
+        <tr>Cart Summary</tr>
+        @foreach (var item in Model.ShoppingCartItems)
+        {
+            <tr>
+                <td><img width="70" class="basket-img" src="@item.Book.ImageUrl" alt="@item.Book.Title"></td>
+                <td>
+                    <table>
+                        <tr>@item.Book.Title</tr>
+                        <tr>
+                            <td>@{
+                                var authorsList = item.Book.Authors.ToList();
+                                for (var i = 0; i < authorsList.Count; i++)
+                                {
+                                    @authorsList[i].Name
+                                    @if (i != authorsList.Count - 1)
+                                    {
+                                        @:,
+                                    }
+
+                                }
+                            }
+                            </td>
+                        </tr>
+                        <tr><td>Qty @item.Quantity</td></tr>
+                        <tr><td>@((item.Quantity * item.Book.Price).ToString("C"))</td></tr>
+                    </table>
+                </td>
+            </tr>
+        }
+        <tr>
+            <td>Order Total: </td>
+            <td>@Model.Total.ToString("C")</td>
+        </tr>
+    </table>
+    <br />
+
+    <table>
+        <tr>Delivery Details</tr>
+        <tr>
+            <td>@Model.FirstName @Model.LastName</td>
+        </tr>
+        <tr>
+            <td>@Model.Address</td>
+        </tr>
+        <tr>
+            <td>@Model.City</td>
+        </tr>
+        <tr>
+            <td>@Model.County</td>
+        </tr>
+        <tr>
+            <td>@Model.PostCode</td>
+        </tr>
+        <tr>
+            <td>@Model.Country</td>
+        </tr>
+        <tr>
+            <td>@Model.Email</td>
+        </tr>
+        <tr>
+            <td>@Model.Phone</td>
+        </tr>
+
+    </table>
+
+    <div class="col" style="text-align:center;">
+        <p>If you have any questions about your order, please contact us at mvcbook@example.com.</p>
+        <p>Thanks again for your business!</p>
+    </div>
+</body>
+</html>
