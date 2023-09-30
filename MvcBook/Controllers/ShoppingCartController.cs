@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MvcBook.Data;
-using MvcBook.Migrations;
 using MvcBook.Models;
 
 namespace MvcBook.Controllers

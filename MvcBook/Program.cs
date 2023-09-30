@@ -13,7 +13,8 @@ using System.Net.Mail;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<MvcBookContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MvcBookContext") ?? throw new InvalidOperationException("Connection string 'MvcBookContext' not found.")));
+builder.Services.AddDbContext<MvcBookContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("MvcBookContext")));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>() // include roles
